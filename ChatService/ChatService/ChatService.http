@@ -1,0 +1,19 @@
+@ChatService_HostAddress = http://localhost:5214
+
+GET {{ChatService_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
+POST {{ChatService_HostAddress}}/user/create
+Accept: application/json
+
+{
+  {
+      "key": {
+      "identifier": "1e0c6f4b-3e1b-497a-b1e6-853b358bb274",
+      "name": "Tiago"
+    }
+  }
+}
+
+###
