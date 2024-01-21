@@ -64,11 +64,11 @@ public static class RolesEndpoints
         .RolesConfig("UpdateGroupRole");
     }
 
-    private static void RolesConfig(this RouteHandlerBuilder route, string name)
+    private static RouteHandlerBuilder RolesConfig(this RouteHandlerBuilder route, string name)
     {
-        route.WithName(name)
-            .WithTags("Roles")
-            .WithOpenApi();
+        return route.WithName(name)
+                    .WithTags("Roles")
+                    .WithOpenApi();
     }
 }
 

@@ -6,13 +6,13 @@ using Microsoft.AspNetCore.SignalR;
 
 namespace ChatService.Infrastructure.Hubs.Chat;
 
-internal sealed class ChatUserHub : Hub<IChatUserHub>
+public sealed class ChatUserHub : Hub<IChatUserHub>
 {
     private readonly IDictionary<string, UserDTO>? _connections;
 
     private readonly IDictionary<Guid, List<MessageDTO>>? _connectionsMessages;
 
-    public async Task JoinChatAsync(UserDTO user)
+    public async Task StartChatAsync(UserDTO user)
     {
         user.Key.ValidateIdentifier();
 

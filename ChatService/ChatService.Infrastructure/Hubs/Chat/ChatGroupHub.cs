@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.SignalR;
 
 namespace ChatService.Infrastructure.Hubs.Chat;
 
-internal sealed class ChatGroupHub : Hub<IChatGroupHub>
+public sealed class ChatGroupHub : Hub<IChatGroupHub>
 {
     private readonly IDictionary<string, GroupUserDTO>? _groupConnections;
     private readonly IDictionary<Guid, List<MessageDTO>>? _groupMessages;

@@ -4,7 +4,7 @@ using ChatService.Api.DTOS.GroupUser;
 
 namespace ChatService.Infrastructure.Hubs.Chat.Services;
 
-internal interface IChatGroupHub : IChaHub
+public interface IChatGroupHub : IChaHub
 {
     Task ConnectedUsers(IEnumerable<GroupUserDTO> users);
     Task LeftGroupAsync(MessageDTO message);

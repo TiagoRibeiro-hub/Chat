@@ -5,7 +5,9 @@ using ChatService.Api.DTOS.Users;
 using ChatService.Domain.Models;
 using ChatService.Domain.Models.Groups;
 using ChatService.Domain.Models.Users;
+using ChatService.EndpointFilters;
 using ChatService.Infrastructure.Utils;
+using Microsoft.AspNetCore.Http;
 using System.Net;
 
 namespace ChatService.Endpoints;
@@ -45,7 +47,8 @@ public static class UserEndpoint
 
             return result;
         })
-        .UserConfig("CreateUser");
+        .UserConfig("CreateUser")
+        .AddEndpointFilter<CreateEndpointFilter>();
     }
 
     private static void Delete(this WebApplication app)
@@ -124,11 +127,11 @@ public static class UserEndpoint
         .UserConfig("ListUsers");
     }
 
-    private static void UserConfig(this RouteHandlerBuilder route, string name)
+    private static RouteHandlerBuilder UserConfig(this RouteHandlerBuilder route, string name)
     {
-        route.WithName(name)
-            .WithTags("Users")
-            .WithOpenApi();
+        return route.WithName(name)
+                    .WithTags("Users")
+                    .WithOpenApi();
     }
 }
 

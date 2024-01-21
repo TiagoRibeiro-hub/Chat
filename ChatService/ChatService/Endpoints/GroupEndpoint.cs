@@ -160,11 +160,11 @@ public static class GroupEndpoint
         .GroupConfig("ListGroups");
     }
 
-    private static void GroupConfig(this RouteHandlerBuilder route, string name)
+    private static RouteHandlerBuilder GroupConfig(this RouteHandlerBuilder route, string name)
     {
-        route.WithName(name)
-            .WithTags("Groups")
-            .WithOpenApi();
+        return route.WithName(name)
+                    .WithTags("Groups")
+                    .WithOpenApi();
     }
 }
 
