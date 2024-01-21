@@ -28,7 +28,7 @@ public static class GroupEndpoint
             async Task<Ok<UserDTO>>
             (Guid identifier, UserDTO user, CoreServices coreServices) =>
         {
-            var res = await coreServices.GroupService.AddUser(
+            var res = await coreServices.GroupService.AddUserAsync(
                 new GroupKeyDTO(identifier).ToDomainKey<GroupKeyDTO, GroupKey>(),
                 user.ToDomain<UserDTO, User>()
                 );
@@ -45,7 +45,7 @@ public static class GroupEndpoint
             async Task<Created<GroupDTO>>
             (GroupDTO group, CoreServices coreServices) =>
         {
-            var res = await coreServices.GroupService.Create(group.ToDomain<GroupDTO, Group>());
+            var res = await coreServices.GroupService.CreateAsync(group.ToDomain<GroupDTO, Group>());
             var dto = res.ToDto<GroupDTO, Group>();
             return TypedResults.Created($"/user/create/{dto.Key.Identifier}", dto);
         })
@@ -58,7 +58,7 @@ public static class GroupEndpoint
             async Task<Results<Ok, BadRequest>>
             (Guid identifier, CoreServices coreServices) =>
         {
-            var res = await coreServices.GroupService.Delete(new GroupKeyDTO(identifier).ToDomainKey<GroupKeyDTO, GroupKey>());
+            var res = await coreServices.GroupService.DeleteAsync(new GroupKeyDTO(identifier).ToDomainKey<GroupKeyDTO, GroupKey>());
             return res
             ? TypedResults.Ok()
             : TypedResults.BadRequest();
@@ -72,7 +72,7 @@ public static class GroupEndpoint
             async Task<Ok<GroupDTO>>
             (Guid identifier, CoreServices coreServices) =>
         {
-            var res = await coreServices.GroupService.Get(new GroupKeyDTO(identifier).ToDomainKey<GroupKeyDTO, GroupKey>());
+            var res = await coreServices.GroupService.GetAsync(new GroupKeyDTO(identifier).ToDomainKey<GroupKeyDTO, GroupKey>());
             var dto = res.ToDto<GroupDTO, Group>();
             return TypedResults.Ok(dto);
         })
@@ -85,7 +85,7 @@ public static class GroupEndpoint
             async Task<Ok<UserDTO>>
             (Guid identifier, CoreServices coreServices) =>
         {
-            var res = await coreServices.GroupService.GetFounder(new GroupKeyDTO(identifier).ToDomainKey<GroupKeyDTO, GroupKey>());
+            var res = await coreServices.GroupService.GetFounderAsync(new GroupKeyDTO(identifier).ToDomainKey<GroupKeyDTO, GroupKey>());
             var dto = res.ToDto<UserDTO, User>();
             return TypedResults.Ok(dto);
         })
@@ -98,7 +98,7 @@ public static class GroupEndpoint
             async Task<Ok<string>>
             (Guid identifier, CoreServices coreServices) =>
         {
-            var res = await coreServices.GroupService.GetName(new GroupKeyDTO(identifier).ToDomainKey<GroupKeyDTO, GroupKey>());
+            var res = await coreServices.GroupService.GetNameAsync(new GroupKeyDTO(identifier).ToDomainKey<GroupKeyDTO, GroupKey>());
             return TypedResults.Ok(res);
         })
         .GroupConfig("GetGroupName");
@@ -110,7 +110,7 @@ public static class GroupEndpoint
             async Task<Ok<List<UserDTO>>>
             (Guid identifier, CoreServices coreServices) =>
         {
-            var res = await coreServices.GroupService.GetUsers(new GroupKeyDTO(identifier).ToDomainKey<GroupKeyDTO, GroupKey>());
+            var res = await coreServices.GroupService.GetUsersAsync(new GroupKeyDTO(identifier).ToDomainKey<GroupKeyDTO, GroupKey>());
             var dtos = res.ToDto<UserDTO, User>();
             return TypedResults.Ok(dtos);
         })
@@ -123,7 +123,7 @@ public static class GroupEndpoint
             async Task<Ok<List<GroupDTO>>>
             (bool complete, CoreServices coreServices) =>
         {
-            var res = await coreServices.GroupService.List(complete);
+            var res = await coreServices.GroupService.ListAsync(complete);
             var dtos = res.ToDto<GroupDTO, Group>();
             return TypedResults.Ok(dtos);
         })

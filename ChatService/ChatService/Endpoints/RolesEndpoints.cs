@@ -21,7 +21,7 @@ public static class RolesEndpoints
             async Task<Ok<List<GroupRolesDTO>>>
             (Guid identifier, CoreServices coreServices) =>
             {
-                var res = await coreServices.RolesService.GetUserRoles(new UserKeyDTO(identifier).ToDomainKey<UserKeyDTO, UserKey>());
+                var res = await coreServices.RolesService.GetUserRolesAsync(new UserKeyDTO(identifier).ToDomainKey<UserKeyDTO, UserKey>());
                 var dtos = res.ToDto<GroupRolesDTO, GroupRoles>();
                 return TypedResults.Ok(dtos);
             })
@@ -34,7 +34,7 @@ public static class RolesEndpoints
             async Task<Ok<List<GroupRolesDTO>>>
             (Guid identifier, CoreServices coreServices) =>
             {
-                var res = await coreServices.RolesService.GetGroupRoles(new GroupKeyDTO(identifier).ToDomainKey<GroupKeyDTO, GroupKey>());
+                var res = await coreServices.RolesService.GetGroupRolesAsync(new GroupKeyDTO(identifier).ToDomainKey<GroupKeyDTO, GroupKey>());
                 var dtos = res.ToDto<GroupRolesDTO, GroupRoles>();
                 return TypedResults.Ok(dtos);
             })
@@ -47,7 +47,7 @@ public static class RolesEndpoints
             async Task<Ok<List<GroupRolesDTO>>>
             (Guid identifier, List<GroupRolesDTO> groupRoles, CoreServices coreServices) =>
             {
-                var res = await coreServices.RolesService.UpdateGroupRole(
+                var res = await coreServices.RolesService.UpdateGroupRoleAsync(
                     new GroupKeyDTO(identifier).ToDomainKey<GroupKeyDTO, GroupKey>(),
                     groupRoles.ToDomain<GroupRolesDTO, GroupRoles>()
                     );

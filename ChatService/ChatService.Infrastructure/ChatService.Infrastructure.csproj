@@ -12,7 +12,7 @@
 
 	<ItemGroup>
 	  <ProjectReference Include="..\ChatService.Api\ChatService.Api.csproj" />
-	  <ProjectReference Include="..\ChatService.Infrastructure.Data\ChatService.Infrastructure.Data.csproj" />
+	  <ProjectReference Include="..\ChatService.Core\ChatService.Core.csproj" />
 	</ItemGroup>
 
 </Project>

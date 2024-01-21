@@ -1,4 +1,5 @@
-﻿using ChatService.Domain.Models;
+﻿using ChatService.Core.Repositories.EntitiesRepositories.UsersRepositories;
+using ChatService.Domain.Models;
 using ChatService.Domain.Models.Groups;
 using ChatService.Domain.Models.Users;
 
@@ -6,37 +7,44 @@ namespace ChatService.Core.Services.UserServices;
 
 internal sealed class UserService : IUserService
 {
-    public Task<User> Create(User item)
+    private readonly IUserRepository _userRepository;
+
+    public UserService(IUserRepository userRepository)
+    {
+        _userRepository = userRepository;
+    }
+
+    public Task<User> CreateAsync(User item)
     {
         throw new NotImplementedException();
     }
 
-    public Task<bool> Delete(UserKey key)
+    public Task<bool> DeleteAsync(UserKey key)
     {
         throw new NotImplementedException();
     }
 
-    public Task<User> Get(UserKey key)
+    public Task<User> GetAsync(UserKey key)
     {
         throw new NotImplementedException();
     }
 
-    public Task<List<Group>> GetGroups(UserKey key)
+    public Task<List<Group>?> GetGroupsAsync(UserKey key)
     {
         throw new NotImplementedException();
     }
 
-    public Task<string> GetName(UserKey key)
+    public Task<string?> GetNameAsync(UserKey key)
     {
         throw new NotImplementedException();
     }
 
-    public Task<List<GroupRoles>> GetRoles(UserKey key)
+    public Task<List<User>> ListAsync(bool complete)
     {
         throw new NotImplementedException();
     }
 
-    public Task<List<User>> List(bool complete)
+    public Task<bool> UpdateAsync(User item)
     {
         throw new NotImplementedException();
     }

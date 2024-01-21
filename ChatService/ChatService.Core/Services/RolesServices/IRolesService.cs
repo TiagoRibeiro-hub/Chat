@@ -5,7 +5,7 @@ namespace ChatService.Core.Services.RolesServices;
 
 public interface IRolesService
 {
-    Task<List<GroupRoles>> GetGroupRoles(GroupKey key);
-    Task<List<GroupRoles>> GetUserRoles(UserKey key);
-    Task<List<GroupRoles>> UpdateGroupRole(GroupKey key, List<GroupRoles> groupRoles);
+    Task<List<GroupRoles>> GetGroupRolesAsync(GroupKey key);
+    Task<List<GroupRoles>> GetUserRolesAsync(UserKey key);
+    Task<List<GroupRoles>> UpdateGroupRoleAsync(GroupKey key, List<GroupRoles> groupRoles);
 }

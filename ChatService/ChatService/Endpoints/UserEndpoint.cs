@@ -25,7 +25,7 @@ public static class UserEndpoint
             async Task<Created<UserDTO>>
             (UserDTO user, CoreServices coreServices) =>
         {
-            var res = await coreServices.UserService.Create(user.ToDomain<UserDTO, User>());
+            var res = await coreServices.UserService.CreateAsync(user.ToDomain<UserDTO, User>());
             var dto = res.ToDto<UserDTO, User>();
             return TypedResults.Created($"/user/create/{dto.Key.Identifier}", dto);
         })
@@ -38,7 +38,7 @@ public static class UserEndpoint
             async Task<Results<Ok, BadRequest>>
             (Guid identifier, CoreServices coreServices) =>
         {
-            var res = await coreServices.UserService.Delete(new UserKeyDTO(identifier).ToDomainKey<UserKeyDTO, UserKey>());
+            var res = await coreServices.UserService.DeleteAsync(new UserKeyDTO(identifier).ToDomainKey<UserKeyDTO, UserKey>());
 
             return res
             ? TypedResults.Ok()
@@ -53,7 +53,7 @@ public static class UserEndpoint
             async Task<Ok<UserDTO>>
             (Guid identifier, CoreServices coreServices) =>
         {
-            var res = await coreServices.UserService.Get(new UserKeyDTO(identifier).ToDomainKey<UserKeyDTO, UserKey>());
+            var res = await coreServices.UserService.GetAsync(new UserKeyDTO(identifier).ToDomainKey<UserKeyDTO, UserKey>());
             var dto = res.ToDto<UserDTO, User>();
             return TypedResults.Ok(dto);
         })
@@ -66,7 +66,7 @@ public static class UserEndpoint
             async Task<Ok<List<GroupDTO>>>
             (Guid identifier, CoreServices coreServices) =>
         {
-            var res = await coreServices.UserService.GetGroups(new UserKeyDTO(identifier).ToDomainKey<UserKeyDTO, UserKey>());
+            var res = await coreServices.UserService.GetGroupsAsync(new UserKeyDTO(identifier).ToDomainKey<UserKeyDTO, UserKey>());
             var dtos = res.ToDto<GroupDTO, Group>();
             return TypedResults.Ok(dtos);
         })
@@ -79,7 +79,7 @@ public static class UserEndpoint
             async Task<Ok<string>>
             (Guid identifier, CoreServices coreServices) =>
         {
-            var res = await coreServices.UserService.GetName(new UserKeyDTO(identifier).ToDomainKey<UserKeyDTO, UserKey>());
+            var res = await coreServices.UserService.GetNameAsync(new UserKeyDTO(identifier).ToDomainKey<UserKeyDTO, UserKey>());
             return TypedResults.Ok(res);
         })
         .UserConfig("GetUserName");
@@ -91,7 +91,7 @@ public static class UserEndpoint
             async Task<Ok<List<UserDTO>>>
             (bool complete, CoreServices coreServices) =>
         {
-            var res = await coreServices.UserService.List(complete);
+            var res = await coreServices.UserService.ListAsync(complete);
             var dtos = res.ToDto<UserDTO, User>();
             return TypedResults.Ok(dtos);
         })

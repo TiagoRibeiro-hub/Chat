@@ -11,8 +11,12 @@ public static class ServicesExtensions
     {
         services.AddSingleton<CoreServices>();
         services.AddCoreServices();
+
         services.AddChatServices();
+
         services.AddCorsPolicies();
+
+        services.AddRepositoriesServices();
     }
 
     public static void AddCorsPolicies(this IServiceCollection services)

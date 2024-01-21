@@ -1,4 +1,5 @@
 ﻿using ChatService.Api.DTOS;
+using ChatService.Domain.Models.Users;
 
 namespace ChatService.Infrastructure.Utils;
 internal static class ChatHubUtils

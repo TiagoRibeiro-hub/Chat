@@ -6,9 +6,14 @@ using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 
 namespace ChatService.Infrastructure.Data;
-public class AppDbContext : DbContext
+public class ChatDbContext : DbContext
 {
-    public AppDbContext(DbContextOptions<AppDbContext> options)
+    public ChatDbContext()
+    {
+        ChangeTracker.LazyLoadingEnabled = false;
+    }
+
+    public ChatDbContext(DbContextOptions<ChatDbContext> options)
     : base(options)
     {
         ChangeTracker.LazyLoadingEnabled = false;
