@@ -1,7 +1,8 @@
 ﻿using ChatService.Api.DTOS;
+using ChatService.Domain.Models;
 using System.Text.Json;
 
-namespace ChatService.Api.Utils;
+namespace ChatService.Infrastructure.Utils;
 public static class Mappings
 {
     /// <summary>

@@ -30,7 +30,7 @@ internal sealed class ChatGroupHub : Hub<IChatGroupHub>
         return Clients.Group(groupDTO.Key.Identifier.ToString())
                         .PreviousMessageAsync(
                             groupDTO,
-                            ChatHubUtils.GetMessagesDTO(_groupMessages!, groupDTO.Key.Identifier, null)
+                            _groupMessages?.GetMessagesDTO(groupDTO.Key.Identifier, null)
                             );
     }
 
@@ -41,7 +41,7 @@ internal sealed class ChatGroupHub : Hub<IChatGroupHub>
             var messageDTO = new MessageDTO(userGroupDTO.User, message, DateTime.UtcNow);
             await Clients.Group(userGroupDTO.Group.Key.Identifier.ToString()).ReceiveMessageAsync(userGroupDTO.User, messageDTO);
 
-            _groupMessages![userGroupDTO.Group.Key.Identifier] = ChatHubUtils.GetMessagesDTO(_groupMessages, userGroupDTO.Group.Key.Identifier, messageDTO);
+            _groupMessages![userGroupDTO.Group.Key.Identifier] = _groupMessages.GetMessagesDTO(userGroupDTO.Group.Key.Identifier, messageDTO);
 
             // TODO call Db
         }
@@ -60,7 +60,7 @@ internal sealed class ChatGroupHub : Hub<IChatGroupHub>
             var messageDTO = new MessageDTO(userGroupDTO.User, "Has joined the group", DateTime.UtcNow);
             await Clients.Group(userGroupDTO.Group.Key.Identifier.ToString()).JoinAsync(messageDTO);
 
-            _groupMessages![userGroupDTO.Group.Key.Identifier] = ChatHubUtils.GetMessagesDTO(_groupMessages, userGroupDTO.Group.Key.Identifier, messageDTO);
+            _groupMessages![userGroupDTO.Group.Key.Identifier] = _groupMessages.GetMessagesDTO(userGroupDTO.Group.Key.Identifier, messageDTO);
 
             // TODO Bd start a group conversation
         }
@@ -82,7 +82,7 @@ internal sealed class ChatGroupHub : Hub<IChatGroupHub>
 
         await Clients.Group(userGroupDTO.Group.Key.Identifier.ToString()).LeftGroupAsync(messageDTO);
 
-        _groupMessages![userGroupDTO.Group.Key.Identifier] = ChatHubUtils.GetMessagesDTO(_groupMessages, userGroupDTO.Group.Key.Identifier, messageDTO);
+        _groupMessages![userGroupDTO.Group.Key.Identifier] = _groupMessages.GetMessagesDTO(userGroupDTO.Group.Key.Identifier, messageDTO);
 
         // TODO call Db
     }

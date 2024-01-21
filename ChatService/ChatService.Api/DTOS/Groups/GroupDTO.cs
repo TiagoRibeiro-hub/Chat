@@ -40,4 +40,9 @@ public sealed class GroupDTO : BaseDTO<GroupDTO, Group>
         Founder.ValidateKey();
         Users.ValidateKeys<UserDTO, User>();
     }
+
+    public static implicit operator GroupDTO(List<GroupDTO> v)
+    {
+        throw new NotImplementedException();
+    }
 }

@@ -1,11 +1,12 @@
 ﻿using ChatService.Api;
+using ChatService.Api.DTOS;
 using ChatService.Api.DTOS.Groups;
 using ChatService.Api.DTOS.Users;
-using ChatService.Api.Utils;
 using ChatService.Domain.Models;
 using ChatService.Domain.Models.Groups;
 using ChatService.Domain.Models.Users;
-using Microsoft.AspNetCore.Http.HttpResults;
+using ChatService.Infrastructure.Utils;
+using System.Net;
 
 namespace ChatService.Endpoints;
 public static class UserEndpoint
@@ -22,12 +23,27 @@ public static class UserEndpoint
     private static void Create(this WebApplication app)
     {
         app.MapPost("/user/create",
-            async Task<Created<UserDTO>>
+            async Task<ResultDTO<UserDTO>>
             (UserDTO user, CoreServices coreServices) =>
         {
             var res = await coreServices.UserService.CreateAsync(user.ToDomain<UserDTO, User>());
-            var dto = res.ToDto<UserDTO, User>();
-            return TypedResults.Created($"/user/create/{dto.Key.Identifier}", dto);
+            var result = new ResultDTO<UserDTO>()
+            {
+                Data = res == null ? null : res.ToDto<UserDTO, User>(),
+            };
+
+            if (ResultDTO<UserDTO>.HasValue(result.Data))
+            {
+                result.Message = $"/user/create/{result.Data.Key.Identifier}";
+                result.StatusCode = HttpStatusCode.Created;
+            }
+            else
+            {
+                result.Message = "Failed to create";
+                result.StatusCode = HttpStatusCode.BadRequest;
+            }
+
+            return result;
         })
         .UserConfig("CreateUser");
     }
@@ -35,14 +51,15 @@ public static class UserEndpoint
     private static void Delete(this WebApplication app)
     {
         app.MapDelete("/user/delete/{identifier}",
-            async Task<Results<Ok, BadRequest>>
+            async Task<ResultDTO<bool>>
             (Guid identifier, CoreServices coreServices) =>
         {
             var res = await coreServices.UserService.DeleteAsync(new UserKeyDTO(identifier).ToDomainKey<UserKeyDTO, UserKey>());
 
-            return res
-            ? TypedResults.Ok()
-            : TypedResults.BadRequest();
+            return new ResultDTO<bool>()
+            {
+                Data = res
+            };
         })
         .UserConfig("DeleteUser");
     }
@@ -50,12 +67,14 @@ public static class UserEndpoint
     private static void Get(this WebApplication app)
     {
         app.MapGet("/user/{identifier}",
-            async Task<Ok<UserDTO>>
+            async Task<ResultDTO<UserDTO>>
             (Guid identifier, CoreServices coreServices) =>
         {
             var res = await coreServices.UserService.GetAsync(new UserKeyDTO(identifier).ToDomainKey<UserKeyDTO, UserKey>());
-            var dto = res.ToDto<UserDTO, User>();
-            return TypedResults.Ok(dto);
+            return new ResultDTO<UserDTO>()
+            {
+                Data = res == null ? null : res.ToDto<UserDTO, User>()
+            };
         })
         .UserConfig("GetUser");
     }
@@ -63,12 +82,14 @@ public static class UserEndpoint
     private static void GetGroups(this WebApplication app)
     {
         app.MapGet("/user/groups/{identifier}",
-            async Task<Ok<List<GroupDTO>>>
+            async Task<ResultDTO<List<GroupDTO>>>
             (Guid identifier, CoreServices coreServices) =>
         {
             var res = await coreServices.UserService.GetGroupsAsync(new UserKeyDTO(identifier).ToDomainKey<UserKeyDTO, UserKey>());
-            var dtos = res.ToDto<GroupDTO, Group>();
-            return TypedResults.Ok(dtos);
+            return new ResultDTO<List<GroupDTO>>()
+            {
+                Data = res == null ? null : res.ToDto<GroupDTO, Group>()
+            };
         })
         .UserConfig("GetUserGroups");
     }
@@ -76,11 +97,14 @@ public static class UserEndpoint
     private static void GetName(this WebApplication app)
     {
         app.MapGet("/user/name/{identifier}",
-            async Task<Ok<string>>
+            async Task<ResultDTO<string>>
             (Guid identifier, CoreServices coreServices) =>
         {
             var res = await coreServices.UserService.GetNameAsync(new UserKeyDTO(identifier).ToDomainKey<UserKeyDTO, UserKey>());
-            return TypedResults.Ok(res);
+            return new ResultDTO<string>()
+            {
+                Data = res
+            };
         })
         .UserConfig("GetUserName");
     }
@@ -88,12 +112,14 @@ public static class UserEndpoint
     private static void List(this WebApplication app)
     {
         app.MapGet("/user/{complete}",
-            async Task<Ok<List<UserDTO>>>
+            async Task<ResultDTO<List<UserDTO>>>
             (bool complete, CoreServices coreServices) =>
         {
             var res = await coreServices.UserService.ListAsync(complete);
-            var dtos = res.ToDto<UserDTO, User>();
-            return TypedResults.Ok(dtos);
+            return new ResultDTO<List<UserDTO>>()
+            {
+                Data = res == null ? null : res.ToDto<UserDTO, User>()
+            };
         })
         .UserConfig("ListUsers");
     }

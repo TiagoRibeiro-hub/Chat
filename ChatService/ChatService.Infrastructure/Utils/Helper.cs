@@ -1,10 +1,14 @@
 ﻿using ChatService.Api.DTOS;
-using ChatService.Domain.Models.Users;
+using System.Runtime.CompilerServices;
 
 namespace ChatService.Infrastructure.Utils;
-internal static class ChatHubUtils
+
+public static class Helper
 {
-    public static List<MessageDTO> GetMessagesDTO<T>(T connectionsMessages, Guid identifier, MessageDTO? messageDTO)
+    [UnsafeAccessor(UnsafeAccessorKind.Method, Name = "ToDomain")]
+    internal static extern ref E ToDomain<D, E>(D dto);
+
+    internal static List<MessageDTO> GetMessagesDTO<T>(this T connectionsMessages, Guid identifier, MessageDTO? messageDTO)
         where T : IDictionary<Guid, List<MessageDTO>>
     {
         if (!connectionsMessages.TryGetValue(identifier, out List<MessageDTO>? messagesListDTO))
@@ -18,4 +22,3 @@ internal static class ChatHubUtils
         return messagesListDTO;
     }
 }
-

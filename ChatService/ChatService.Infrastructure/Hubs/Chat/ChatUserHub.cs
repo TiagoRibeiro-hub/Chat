@@ -27,7 +27,7 @@ internal sealed class ChatUserHub : Hub<IChatUserHub>
         {
             var messageDTO = new MessageDTO(user, "Has started a conversation", DateTime.UtcNow);
             await Clients.Caller.JoinAsync(messageDTO);
-            _connectionsMessages![user.Key.Identifier] = ChatHubUtils.GetMessagesDTO(_connectionsMessages, user.Key.Identifier, messageDTO);
+            _connectionsMessages![user.Key.Identifier] = _connectionsMessages.GetMessagesDTO(user.Key.Identifier, messageDTO);
             // TODO Bd start a conversation
         }
         else
@@ -51,7 +51,7 @@ internal sealed class ChatUserHub : Hub<IChatUserHub>
         {
             var messagesDTO = new MessageDTO(userDTO, message, DateTime.UtcNow);
 
-            _connectionsMessages![userDTO.Key.Identifier] = ChatHubUtils.GetMessagesDTO(_connectionsMessages, userDTO.Key.Identifier, messagesDTO);
+            _connectionsMessages![userDTO.Key.Identifier] = _connectionsMessages.GetMessagesDTO(userDTO.Key.Identifier, messagesDTO);
 
             await Clients.Caller.ReceiveMessageAsync(userDTO, messagesDTO);
 

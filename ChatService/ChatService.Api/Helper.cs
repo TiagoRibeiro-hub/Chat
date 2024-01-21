@@ -1,9 +1,8 @@
 ﻿using ChatService.Api.DTOS;
 using System.Runtime.CompilerServices;
 
-namespace ChatService.Api.Utils;
-
-public static class Helper
+namespace ChatService.Api;
+internal static class Helper
 {
     [UnsafeAccessor(UnsafeAccessorKind.Method, Name = "ValidateKeys")]
     internal static extern ref Action<List<D>?> ValidateKeys<D>();
@@ -20,3 +19,4 @@ public static class Helper
         }
     }
 }
+

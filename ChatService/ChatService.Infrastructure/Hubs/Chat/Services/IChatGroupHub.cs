@@ -8,5 +8,5 @@ internal interface IChatGroupHub : IChaHub
 {
     Task ConnectedUsers(IEnumerable<GroupUserDTO> users);
     Task LeftGroupAsync(MessageDTO message);
-    Task PreviousMessageAsync(GroupDTO groupDTO, IEnumerable<MessageDTO> messagesListDTO);
+    Task PreviousMessageAsync(GroupDTO groupDTO, IEnumerable<MessageDTO>? messagesListDTO);
 }
