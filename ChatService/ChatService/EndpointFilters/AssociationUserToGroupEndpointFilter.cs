@@ -1,9 +1,11 @@
 ﻿
 using ChatService.Api;
 using ChatService.Api.DTOS;
+using ChatService.Api.DTOS.Messages;
 using ChatService.Api.DTOS.Users;
+using ChatService.Core.Helpers;
+using ChatService.Domain.Entities.Messages;
 using ChatService.Infrastructure.Hubs.Notifications;
-using ChatService.Infrastructure.Hubs.Notifications.Services;
 using ChatService.Utils;
 using Microsoft.AspNetCore.SignalR;
 
@@ -27,20 +29,30 @@ public class AssociationUserToGroupEndpointFilter : IEndpointFilter
     {
         var result = await next(context);
 
-        string groupIdentifierStr = ContextUtils.GetRouteValueGuidAsString(context.HttpContext, "identifier");
+        Guid groupIdentifier = ContextUtils.GetRouteValueGuid(context.HttpContext, "identifier");
 
         if (result is ResultDTO<UserDTO> userDto &&
             userDto.StatusCode == System.Net.HttpStatusCode.OK &&
             ResultDTO<UserDTO>.HasData(userDto.Data)
             )
         {
-            _ = _notificationHubContext.Clients.Group(groupIdentifierStr).JoinAsync(
-                    new MessageDTO(
-                        userDto.Data,
-                        $"Has join the group",
-                        DateTime.UtcNow)
-                    );
+            GroupMessages? groupMessages = await _coreService.GroupMessageService.GetAsync(groupIdentifier);
 
+            if (Guards.IsNull(groupMessages))
+            {
+                throw new Exception();
+            }
+
+            var message = $"{userDto.Data.Key.Name} has join the group";
+            var date = DateTime.UtcNow;
+
+            groupMessages.Messages.Add(new UserMessage(userDto.Data.Key.Identifier, message, date));
+
+            _ = _coreService.GroupMessageService.AddAsync(groupMessages);
+
+            await _notificationHubContext.Clients
+                    .Group(groupIdentifier.ToString())
+                    .JoinAsync(new UserMessageDTO(userDto.Data.Key.Identifier, message, date));
         }
 
         return result;

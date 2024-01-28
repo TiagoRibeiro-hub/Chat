@@ -1,4 +1,4 @@
-﻿using ChatService.Domain.Models.Groups;
+﻿using ChatService.Domain.Entities.Groups;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -27,7 +27,7 @@ public sealed class GroupConfig : IEntityTypeConfiguration<Group>
             .IsRequired();
 
         builder.Property(x => x.Users).HasJsonPropertyName("Users");
-        
+
         builder.Property(x => x.IsPrivate).HasColumnType("bit").IsRequired();
 
         // Relations

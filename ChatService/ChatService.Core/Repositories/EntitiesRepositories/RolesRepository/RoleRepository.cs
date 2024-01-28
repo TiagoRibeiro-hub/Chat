@@ -1,5 +1,5 @@
-﻿using ChatService.Domain.Models;
-using ChatService.Domain.Models.Groups;
+﻿using ChatService.Domain.Entities;
+using ChatService.Domain.Entities.Groups;
 using ChatService.Infrastructure.Data;
 using ChatService.Infrastructure.Data.Abstractions;
 

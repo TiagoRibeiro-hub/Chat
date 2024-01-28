@@ -2,9 +2,9 @@
 using ChatService.Api.DTOS;
 using ChatService.Api.DTOS.Groups;
 using ChatService.Api.DTOS.Users;
-using ChatService.Domain.Models;
-using ChatService.Domain.Models.Groups;
-using ChatService.Domain.Models.Users;
+using ChatService.Domain.Entities;
+using ChatService.Domain.Entities.Groups;
+using ChatService.Domain.Entities.Users;
 using ChatService.EndpointFilters;
 using ChatService.Infrastructure.Utils;
 using System.Net;

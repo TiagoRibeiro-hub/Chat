@@ -1,6 +1,6 @@
 ﻿using ChatService.Api.DTOS.Users;
 using ChatService.Core.Helpers;
-using ChatService.Domain.Models.Groups;
+using ChatService.Domain.Entities.Groups;
 
 namespace ChatService.Api.DTOS.Groups;
 public sealed class GroupRolesDTO : BaseDTO<GroupRolesDTO, GroupRoles>

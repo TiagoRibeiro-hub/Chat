@@ -1,7 +1,6 @@
-﻿using ChatService.Domain.Models;
-using ChatService.Domain.Models.Groups;
-using ChatService.Domain.Models.GroupUserMessages;
-using ChatService.Domain.Models.Users;
+﻿using ChatService.Domain.Entities.Groups;
+using ChatService.Domain.Entities.Messages;
+using ChatService.Domain.Entities.Users;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 
@@ -25,6 +24,6 @@ public class ChatDbContext : DbContext
 
     public DbSet<User> Users { get; set; }
     public DbSet<Group> Groups { get; set; }
-    public DbSet<GroupUserMessages> GroupUserMessages { get; set; }
-    public DbSet<Message> Messages { get; set; }
+    public DbSet<GroupMessages> GroupUserMessages { get; set; }
+    public DbSet<UserMessage> Messages { get; set; }
 }

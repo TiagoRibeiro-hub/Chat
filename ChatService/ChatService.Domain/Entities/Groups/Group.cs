@@ -1,6 +1,6 @@
-﻿using ChatService.Domain.Models.Users;
+﻿using ChatService.Domain.Entities.Users;
 
-namespace ChatService.Domain.Models.Groups;
+namespace ChatService.Domain.Entities.Groups;
 
 public sealed class Group : Base<GroupKey>
 {

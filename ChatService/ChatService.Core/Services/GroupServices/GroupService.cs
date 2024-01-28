@@ -1,6 +1,6 @@
-﻿using ChatService.Domain.Models;
-using ChatService.Domain.Models.Groups;
-using ChatService.Domain.Models.Users;
+﻿using ChatService.Domain.Entities;
+using ChatService.Domain.Entities.Groups;
+using ChatService.Domain.Entities.Users;
 
 namespace ChatService.Core.Services.GroupServices;
 
@@ -21,7 +21,7 @@ internal sealed class GroupService : IGroupService
         throw new NotImplementedException();
     }
 
-    public Task<Group> GetAsync(GroupKey key)
+    public Task<Group?> GetAsync(GroupKey key)
     {
         throw new NotImplementedException();
     }
@@ -31,12 +31,12 @@ internal sealed class GroupService : IGroupService
         throw new NotImplementedException();
     }
 
-    public Task<string> GetNameAsync(GroupKey key)
+    public Task<string?> GetNameAsync(GroupKey key)
     {
         throw new NotImplementedException();
     }
 
-    public Task<List<User>> GetUsersAsync(GroupKey key)
+    public Task<List<User>?> GetUsersAsync(GroupKey key)
     {
         throw new NotImplementedException();
     }

@@ -1,4 +1,5 @@
 ﻿using ChatService.Core.Services.GroupServices;
+using ChatService.Core.Services.MessageServices;
 using ChatService.Core.Services.RolesServices;
 using ChatService.Core.Services.UserServices;
 
@@ -12,11 +13,11 @@ public sealed class CoreServices
         _serviceProvider = serviceProvider;
     }
 
-    public IUserService UserService 
-    { 
-        get 
-        { 
-            return GetService<IUserService>(); 
+    public IUserService UserService
+    {
+        get
+        {
+            return GetService<IUserService>();
         }
     }
 
@@ -36,10 +37,33 @@ public sealed class CoreServices
         }
     }
 
+    public IUserMessageService UserMessageService
+    {
+        get
+        {
+            return GetService<IUserMessageService>();
+        }
+    }
+
+    public IGroupMessageService GroupMessageService
+    {
+        get
+        {
+            return GetService<IGroupMessageService>();
+        }
+    }
+
     private S GetService<S>()
     {
-        var service = _serviceProvider.GetService(typeof(S));
-        if(service == null)
+        Type type = typeof(S);
+
+        if (!type.IsInterface)
+        {
+            throw new Exception();
+        }
+
+        var service = _serviceProvider.GetService(type);
+        if (service == null)
         {
             throw new Exception();
         }

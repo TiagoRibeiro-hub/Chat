@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace ChatService.Domain.Models.Groups;
+namespace ChatService.Domain.Entities.Groups;
 
 public sealed class GroupRoles
 {

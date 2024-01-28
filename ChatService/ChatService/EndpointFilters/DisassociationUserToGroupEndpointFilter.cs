@@ -1,11 +1,12 @@
 ﻿
 using ChatService.Api;
 using ChatService.Api.DTOS;
+using ChatService.Api.DTOS.Messages;
 using ChatService.Api.DTOS.Users;
 using ChatService.Core.Helpers;
-using ChatService.Domain.Models;
+using ChatService.Domain.Entities;
+using ChatService.Domain.Entities.Messages;
 using ChatService.Infrastructure.Hubs.Notifications;
-using ChatService.Infrastructure.Hubs.Notifications.Services;
 using ChatService.Infrastructure.Utils;
 using ChatService.Utils;
 using Microsoft.AspNetCore.SignalR;
@@ -28,14 +29,12 @@ public class DisassociationUserToGroupEndpointFilter : IEndpointFilter
 
     public async ValueTask<object?> InvokeAsync(EndpointFilterInvocationContext context, EndpointFilterDelegate next)
     {
-        string groupIdentifierStr = ContextUtils.GetRouteValueGuidAsString(context.HttpContext, "identifier");
+        Guid groupIdentifier = ContextUtils.GetRouteValueGuid(context.HttpContext, "identifier");
         Guid userIdentifier = ContextUtils.GetRouteValueGuid(context.HttpContext, "userIdentifier");
 
         UserKeyDTO userKey = new(userIdentifier);
 
-        string? userName = await _coreService.UserService.GetNameAsync(
-                    userKey.ToDomainKey<UserKeyDTO, UserKey>()
-                    );
+        string? userName = await _coreService.UserService.GetNameAsync(userKey.ToDomainKey<UserKeyDTO, UserKey>());
 
         if (Guards.IsNull(userName))
         {
@@ -52,12 +51,23 @@ public class DisassociationUserToGroupEndpointFilter : IEndpointFilter
             resultDto.Data == true
             )
         {
-            _ = _notificationHubContext.Clients.Group(groupIdentifierStr).LeftAsync(
-                    new MessageDTO(
-                        new UserDTO(userKey),
-                        $"Has left the group",
-                        DateTime.UtcNow)
-                    );
+            GroupMessages? groupMessages = await _coreService.GroupMessageService.GetAsync(groupIdentifier);
+
+            if (Guards.IsNull(groupMessages))
+            {
+                throw new Exception();
+            }
+
+            var message = $"{userName} has left the group";
+            var date = DateTime.UtcNow;
+
+            groupMessages.Messages.Add(new UserMessage(userIdentifier, message, date));
+
+            _ = _coreService.GroupMessageService.AddAsync(groupMessages);
+
+            _ = _notificationHubContext.Clients
+                    .Group(groupIdentifier.ToString())
+                    .LeftAsync(new UserMessageDTO(userKey.Identifier, message, date));
 
         }
         return result;

@@ -1,5 +1,5 @@
-﻿using ChatService.Api.DTOS;
-using ChatService.Api.DTOS.GroupUser;
+﻿using ChatService.Api.DTOS.Groups;
+using ChatService.Api.DTOS.Messages;
 using ChatService.Api.DTOS.Users;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -18,6 +18,6 @@ public static class ServicesExtensions
         services.AddSingleton<IDictionary<string, UserDTO>>(opt => new Dictionary<string, UserDTO>());
         services.AddSingleton<IDictionary<string, GroupUserDTO>>(opt => new Dictionary<string, GroupUserDTO>());
 
-        services.AddSingleton<IDictionary<Guid, List<MessageDTO>>>(opt => new Dictionary<Guid, List<MessageDTO>>());
+        services.AddSingleton<IDictionary<Guid, List<UserMessageDTO>>>(opt => new Dictionary<Guid, List<UserMessageDTO>>());
     }
 }

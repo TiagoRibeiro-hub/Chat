@@ -1,5 +1,4 @@
-﻿using ChatService.Api.Utils;
-using ChatService.Domain.Models;
+﻿using ChatService.Domain.Entities;
 using System.Text.Json.Serialization;
 
 namespace ChatService.Api.DTOS.Users;

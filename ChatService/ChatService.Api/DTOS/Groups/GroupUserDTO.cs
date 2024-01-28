@@ -1,7 +1,6 @@
-﻿using ChatService.Api.DTOS.Groups;
-using ChatService.Api.DTOS.Users;
+﻿using ChatService.Api.DTOS.Users;
 
-namespace ChatService.Api.DTOS.GroupUser;
+namespace ChatService.Api.DTOS.Groups;
 
 /// <summary>
 /// Used for hubs

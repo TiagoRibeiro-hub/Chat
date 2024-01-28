@@ -1,6 +1,6 @@
-﻿using ChatService.Domain.Models;
+﻿using ChatService.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
-using ItemKey = ChatService.Domain.Models.Key;
+using ItemKey = ChatService.Domain.Entities.Key;
 
 namespace ChatService.Infrastructure.Data.Abstractions;
 public interface IBaseRepository<TContext> where TContext : DbContext, new()

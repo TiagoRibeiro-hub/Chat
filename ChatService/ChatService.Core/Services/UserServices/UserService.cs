@@ -1,7 +1,7 @@
 ﻿using ChatService.Core.Repositories.EntitiesRepositories.UsersRepositories;
-using ChatService.Domain.Models;
-using ChatService.Domain.Models.Groups;
-using ChatService.Domain.Models.Users;
+using ChatService.Domain.Entities;
+using ChatService.Domain.Entities.Groups;
+using ChatService.Domain.Entities.Users;
 
 namespace ChatService.Core.Services.UserServices;
 
@@ -24,7 +24,7 @@ internal sealed class UserService : IUserService
         throw new NotImplementedException();
     }
 
-    public Task<User> GetAsync(UserKey key)
+    public Task<User?> GetAsync(UserKey key)
     {
         throw new NotImplementedException();
     }

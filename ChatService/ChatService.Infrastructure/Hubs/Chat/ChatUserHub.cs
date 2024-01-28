@@ -1,4 +1,4 @@
-﻿using ChatService.Api.DTOS;
+﻿using ChatService.Api.DTOS.Messages;
 using ChatService.Api.DTOS.Users;
 using ChatService.Infrastructure.Hubs.Chat.Services;
 using ChatService.Infrastructure.Utils;
@@ -10,7 +10,7 @@ public sealed class ChatUserHub : Hub<IChatUserHub>
 {
     private readonly IDictionary<string, UserDTO>? _connections;
 
-    private readonly IDictionary<Guid, List<MessageDTO>>? _connectionsMessages;
+    private readonly IDictionary<Guid, List<UserMessageDTO>>? _connectionsMessages;
 
     public async Task StartChatAsync(UserDTO user)
     {
@@ -22,10 +22,10 @@ public sealed class ChatUserHub : Hub<IChatUserHub>
         }
         _connections![Context.ConnectionId] = user;
 
-        List<MessageDTO>? messagesListDTO = null; // TODO Bd see if already had started a conversation 
+        List<UserMessageDTO>? messagesListDTO = null; // TODO Bd see if already had started a conversation 
         if (messagesListDTO == null)
         {
-            var messageDTO = new MessageDTO(user, "Has started a conversation", DateTime.UtcNow);
+            var messageDTO = new UserMessageDTO(user.Key.Identifier, "Has started a conversation", DateTime.UtcNow);
             await Clients.Caller.JoinAsync(messageDTO);
             _connectionsMessages![user.Key.Identifier] = _connectionsMessages.GetMessagesDTO(user.Key.Identifier, messageDTO);
             // TODO Bd start a conversation
@@ -40,7 +40,6 @@ public sealed class ChatUserHub : Hub<IChatUserHub>
     public void LeftChat(UserDTO user)
     {
         user.Key.ValidateIdentifier();
-        // TODO Bd remove from user id
         _ = _connections!.Remove(Context.ConnectionId);
         _ = _connectionsMessages!.Remove(user.Key.Identifier);
     }
@@ -49,7 +48,7 @@ public sealed class ChatUserHub : Hub<IChatUserHub>
     {
         if (_connections!.TryGetValue(Context.ConnectionId, out UserDTO? userDTO))
         {
-            var messagesDTO = new MessageDTO(userDTO, message, DateTime.UtcNow);
+            var messagesDTO = new UserMessageDTO(userDTO.Key.Identifier, message, DateTime.UtcNow);
 
             _connectionsMessages![userDTO.Key.Identifier] = _connectionsMessages.GetMessagesDTO(userDTO.Key.Identifier, messagesDTO);
 

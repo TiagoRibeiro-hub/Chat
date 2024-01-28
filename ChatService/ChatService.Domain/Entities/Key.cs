@@ -1,4 +1,4 @@
-﻿namespace ChatService.Domain.Models;
+﻿namespace ChatService.Domain.Entities;
 
 public record Key(Guid Identifier, string Name);
 

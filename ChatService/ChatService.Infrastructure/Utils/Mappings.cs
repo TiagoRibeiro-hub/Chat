@@ -1,5 +1,4 @@
 ﻿using ChatService.Api.DTOS;
-using ChatService.Domain.Models;
 using System.Text.Json;
 
 namespace ChatService.Infrastructure.Utils;

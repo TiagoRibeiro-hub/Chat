@@ -8,32 +8,32 @@ public sealed class ResultDTO<T>
     public T? Data { get; set; }
 
     private string? _message;
-    public string? Message 
-    { 
-        get 
-        { 
-            if(Data == null && Errors == null)
+    public string? Message
+    {
+        get
+        {
+            if (Data == null && Errors == null)
             {
                 return "The request has been successfully processed.";
             }
 
-            if(StatusCode == HttpStatusCode.InternalServerError || 
+            if (StatusCode == HttpStatusCode.InternalServerError ||
                 StatusCode == HttpStatusCode.BadRequest)
             {
                 return _message ?? "Something went wrong.";
             }
 
-            if(StatusCode == HttpStatusCode.NotFound)
+            if (StatusCode == HttpStatusCode.NotFound)
             {
                 return _message ?? "Not Found.";
             }
 
             return _message;
         }
-        set 
-        { 
+        set
+        {
             _message = value;
-        } 
+        }
     }
 
     private HttpStatusCode? _statusCode;

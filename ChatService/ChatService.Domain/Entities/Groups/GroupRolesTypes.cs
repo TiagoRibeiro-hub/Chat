@@ -1,4 +1,4 @@
-﻿namespace ChatService.Domain.Models.Groups;
+﻿namespace ChatService.Domain.Entities.Groups;
 
 public enum GroupRolesTypes
 {

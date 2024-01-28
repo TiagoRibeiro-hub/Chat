@@ -1,7 +1,7 @@
 ﻿using ChatService.Core.Helpers;
-using ChatService.Domain.Models;
-using ChatService.Domain.Models.Groups;
-using ChatService.Domain.Models.Users;
+using ChatService.Domain.Entities;
+using ChatService.Domain.Entities.Groups;
+using ChatService.Domain.Entities.Users;
 using ChatService.Infrastructure.Data;
 using ChatService.Infrastructure.Data.Abstractions;
 using Microsoft.EntityFrameworkCore;
@@ -78,10 +78,10 @@ public sealed class GroupRepository : IGroupRepository
 
             return user;
         }
-        catch (Exception)
+        catch (Exception ex)
         {
             _baseRepository.UnitOfWork.Rollback();
-            throw new Exception();
+            throw new Exception("AddUserAsync", ex);
         }
     }
 
@@ -141,7 +141,7 @@ public sealed class GroupRepository : IGroupRepository
             {
                 throw new Exception("Group not found");
             }
-            
+
             var user = await _baseRepository.UnitOfWork.Context.Set<User>().FirstOrDefaultAsync(x => x.Key.Identifier == userKey.Identifier);
             if (Guards.IsNull(user))
             {
@@ -206,7 +206,7 @@ public sealed class GroupRepository : IGroupRepository
         catch (Exception ex)
         {
             _baseRepository.UnitOfWork.Rollback();
-            throw new Exception();
+            throw new Exception("RemoveUserAsync", ex);
         }
     }
 

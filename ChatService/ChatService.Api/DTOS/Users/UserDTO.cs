@@ -1,8 +1,8 @@
 ﻿using ChatService.Api.DTOS.Groups;
 using ChatService.Api.Utils;
 using ChatService.Core.Helpers;
-using ChatService.Domain.Models.Groups;
-using ChatService.Domain.Models.Users;
+using ChatService.Domain.Entities.Groups;
+using ChatService.Domain.Entities.Users;
 
 namespace ChatService.Api.DTOS.Users;
 

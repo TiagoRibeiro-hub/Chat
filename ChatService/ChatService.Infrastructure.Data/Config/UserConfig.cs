@@ -1,4 +1,4 @@
-﻿using ChatService.Domain.Models.Users;
+﻿using ChatService.Domain.Entities.Users;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;

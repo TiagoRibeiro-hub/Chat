@@ -1,4 +1,4 @@
-﻿using ChatService.Domain.Models;
+﻿using ChatService.Domain.Entities;
 
 namespace ChatService.Infrastructure.Data.Abstractions;
 public interface IBaseService<T, K> where T : Base<K> where K : Key
@@ -10,4 +10,3 @@ public interface IBaseService<T, K> where T : Base<K> where K : Key
     Task<List<T>> ListAsync(bool complete);
     Task<bool> UpdateAsync(T item);
 }
-

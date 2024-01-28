@@ -1,7 +1,7 @@
-﻿using ChatService.Domain.Models;
+﻿using ChatService.Domain.Entities;
 using ChatService.Infrastructure.Data.Abstractions;
 using Microsoft.EntityFrameworkCore;
-using ItemKey = ChatService.Domain.Models.Key;
+using ItemKey = ChatService.Domain.Entities.Key;
 
 namespace ChatService.Core.Repositories;
 

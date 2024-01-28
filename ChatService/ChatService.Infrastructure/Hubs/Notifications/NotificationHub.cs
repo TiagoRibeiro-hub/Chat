@@ -1,5 +1,4 @@
-﻿using ChatService.Infrastructure.Hubs.Notifications.Services;
-using Microsoft.AspNetCore.SignalR;
+﻿using Microsoft.AspNetCore.SignalR;
 
 namespace ChatService.Infrastructure.Hubs.Notifications;
 

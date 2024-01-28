@@ -1,14 +1,14 @@
-﻿using ChatService.Domain.Models;
+﻿using ChatService.Domain.Entities.Messages;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace ChatService.Infrastructure.Data.Config;
 
-public sealed class MessageConfig : IEntityTypeConfiguration<Message>
+public sealed class UserMessageConfig : IEntityTypeConfiguration<UserMessage>
 {
-    public void Configure(EntityTypeBuilder<Message> builder)
+    public void Configure(EntityTypeBuilder<UserMessage> builder)
     {
-        builder.Property(x => x.Identifier).HasColumnType("uniqueidentifier")
+        builder.Property(x => x.UserIdentifier).HasColumnType("uniqueidentifier")
             .HasColumnName("user_id")
             .IsRequired();
 
@@ -19,10 +19,10 @@ public sealed class MessageConfig : IEntityTypeConfiguration<Message>
         builder.Property(x => x.Date).HasJsonPropertyName("datetime2").IsRequired();
 
         // Keys
-        builder.HasKey(x => x.Identifier);
+        builder.HasKey(x => x.UserIdentifier);
 
         // Indexes
-        builder.HasIndex(x => x.Identifier).IsUnique();
+        builder.HasIndex(x => x.UserIdentifier).IsUnique();
         builder.HasIndex(x => x.Date);
 
         // Table Name
