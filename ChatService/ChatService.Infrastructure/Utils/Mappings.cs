@@ -1,5 +1,6 @@
 ﻿using ChatService.Api.DTOS;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace ChatService.Infrastructure.Utils;
 public static class Mappings
@@ -106,7 +107,10 @@ public static class Mappings
         var json = JsonSerializer.Serialize(item);
         if (json != null)
         {
-            var newItem = JsonSerializer.Deserialize<T>(json);
+            JsonSerializerOptions option = new();
+            option.Converters.Add(new JsonStringEnumConverter());
+
+            var newItem = JsonSerializer.Deserialize<T>(json, option);
             if (newItem != null)
             {
                 return newItem;

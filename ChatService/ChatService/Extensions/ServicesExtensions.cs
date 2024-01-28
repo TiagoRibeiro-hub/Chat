@@ -41,6 +41,8 @@ public static class ServicesExtensions
             options.SerializerOptions.PropertyNameCaseInsensitive = true;
             options.SerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
             options.SerializerOptions.NumberHandling = JsonNumberHandling.Strict;
+
+            options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
         });
     }
 
