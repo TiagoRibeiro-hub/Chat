@@ -7,7 +7,6 @@ using ChatService.Domain.Models.Groups;
 using ChatService.Domain.Models.Users;
 using ChatService.EndpointFilters;
 using ChatService.Infrastructure.Utils;
-using Microsoft.AspNetCore.Http;
 using System.Net;
 
 namespace ChatService.Endpoints;
@@ -34,7 +33,7 @@ public static class UserEndpoint
                 Data = res == null ? null : res.ToDto<UserDTO, User>(),
             };
 
-            if (ResultDTO<UserDTO>.HasValue(result.Data))
+            if (ResultDTO<UserDTO>.HasData(result.Data))
             {
                 result.Message = $"/user/create/{result.Data.Key.Identifier}";
                 result.StatusCode = HttpStatusCode.Created;

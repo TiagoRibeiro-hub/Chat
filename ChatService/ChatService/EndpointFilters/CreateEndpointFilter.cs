@@ -1,32 +1,46 @@
 ﻿
 using ChatService.Api.DTOS;
+using ChatService.Api.DTOS.Groups;
 using ChatService.Api.DTOS.Users;
-using ChatService.Infrastructure.Hubs.Chat;
-using ChatService.Infrastructure.Hubs.Chat.Services;
+using ChatService.Infrastructure.Hubs.Notifications;
+using ChatService.Infrastructure.Hubs.Notifications.Services;
 using Microsoft.AspNetCore.SignalR;
 
 namespace ChatService.EndpointFilters;
 public class CreateEndpointFilter : IEndpointFilter
 {
-    public IHubContext<ChatUserHub, IChatUserHub> _userHubContext { get; }
+    public IHubContext<NotificationHub, INotificationHub> _notificationHubContext { get; }
 
-    public CreateEndpointFilter(IHubContext<ChatUserHub, IChatUserHub> userHubContext)
+    public CreateEndpointFilter(IHubContext<NotificationHub, INotificationHub> notificationHubContext)
     {
-        _userHubContext = userHubContext;
+        _notificationHubContext = notificationHubContext;
     }
 
     public async ValueTask<object?> InvokeAsync(EndpointFilterInvocationContext context, EndpointFilterDelegate next)
     {
         var result = await next(context);
 
-        if (result is ResultDTO<UserDTO> dto &&
-            dto.StatusCode == System.Net.HttpStatusCode.Created &&
-            ResultDTO<UserDTO>.HasValue(dto.Data))
+        if (result is ResultDTO<UserDTO> userDto &&
+            userDto.StatusCode == System.Net.HttpStatusCode.Created &&
+            ResultDTO<UserDTO>.HasData(userDto.Data))
         {
-            _ = _userHubContext.Clients.All.JoinAsync(
+            _ = _notificationHubContext.Clients.All.JoinAsync(
                     new MessageDTO(
-                        dto.Data,
-                        $"{dto.Data.Key.Name} has join the chat.",
+                        userDto.Data,
+                        $"{userDto.Data.Key.Name} has join the chat.",
+                        DateTime.UtcNow)
+                    );
+
+        }
+        else if (result is ResultDTO<GroupDTO> groupDto &&
+            groupDto.StatusCode == System.Net.HttpStatusCode.Created &&
+            ResultDTO<GroupDTO>.HasData(groupDto.Data) &&
+            !groupDto.Data.IsPrivate)
+        {
+            _ = _notificationHubContext.Clients.All.JoinAsync(
+                    new MessageDTO(
+                        groupDto.Data.Founder,
+                        $"{groupDto.Data.Founder.Key.Name} has created the group {groupDto.Data.Key.Name}",
                         DateTime.UtcNow)
                     );
 
@@ -34,4 +48,3 @@ public class CreateEndpointFilter : IEndpointFilter
         return result;
     }
 }
-

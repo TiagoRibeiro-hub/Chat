@@ -9,17 +9,38 @@ public sealed class GroupConfig : IEntityTypeConfiguration<Group>
 {
     public void Configure(EntityTypeBuilder<Group> builder)
     {
-        builder.Property(x => x.Key.Identifier).ValueGeneratedOnAdd().HasColumnType("uniqueidentifier").HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-        builder.Property(x => x.Key.Name).HasColumnType("nvarchar(150)").IsRequired();
+        builder.Property(x => x.Key.Identifier).HasColumnType("uniqueidentifier")
+            .HasColumnName("group_id")
+            .IsRequired()
+            .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+        builder.Property(x => x.Key.Name).HasColumnType("nvarchar(150)")
+            .HasColumnName("group_name")
+            .IsRequired();
+
+        builder.Property(x => x.Founder.Key.Identifier).HasColumnType("uniqueidentifier")
+            .HasColumnName("founder_id")
+            .IsRequired();
+
+        builder.Property(x => x.Founder.Key.Name).HasColumnType("nvarchar(150)")
+            .HasColumnName("founder_name")
+            .IsRequired();
+
         builder.Property(x => x.Users).HasJsonPropertyName("Users");
+        
+        builder.Property(x => x.IsPrivate).HasColumnType("bit").IsRequired();
 
         // Relations
         builder.HasOne(x => x.Founder).WithMany(x => x.Groups).HasForeignKey(x => x.Key.Identifier).OnDelete(DeleteBehavior.Cascade);
 
-        // Keys and Indexes
-        builder.HasIndex(x => x.Key.Identifier);
+        // Keys
+        builder.HasKey(x => x.Key.Identifier);
+
+        // Indexes
         builder.HasIndex(x => x.Key.Identifier).IsUnique();
         builder.HasIndex(x => x.Key.Name);
+        builder.HasIndex(x => x.Founder.Key.Identifier).IsUnique();
+        builder.HasIndex(x => x.IsPrivate);
 
         // Table Name
         builder.ToTable(Domain.Constants.Table.Groups);

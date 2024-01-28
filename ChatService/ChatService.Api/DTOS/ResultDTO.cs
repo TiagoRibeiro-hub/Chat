@@ -12,7 +12,7 @@ public sealed class ResultDTO<T>
     { 
         get 
         { 
-            if(Data == null)
+            if(Data == null && Errors == null)
             {
                 return "The request has been successfully processed.";
             }
@@ -41,7 +41,7 @@ public sealed class ResultDTO<T>
     {
         get
         {
-            if (Data == null)
+            if (Data == null && Errors == null)
             {
                 return _statusCode ?? HttpStatusCode.NoContent;
             }
@@ -60,7 +60,7 @@ public sealed class ResultDTO<T>
 
     public IDictionary<string, string>? Errors { get; set; }
 
-    public static bool HasValue([NotNullWhen(true)] T? data)
+    public static bool HasData([NotNullWhen(true)] T? data)
     {
         return data != null;
     }

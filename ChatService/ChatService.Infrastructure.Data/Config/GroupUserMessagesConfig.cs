@@ -14,8 +14,10 @@ public sealed class GroupUserMessagesConfig : IEntityTypeConfiguration<GroupUser
 
         // Relations
 
-        // Keys and Indexes
+        // Keys
         builder.HasIndex(x => x.Group.Key.Identifier);
+
+        // Indexes
         builder.HasIndex(x => x.Group.Key.Identifier).IsUnique();
         builder.HasIndex(x => x.Group.Key.Name);
 

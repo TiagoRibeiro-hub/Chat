@@ -8,13 +8,15 @@ namespace ChatService.Api.DTOS.Groups;
 
 public sealed class GroupDTO : BaseDTO<GroupDTO, Group>
 {
-    public GroupDTO(GroupKeyDTO key, UserDTO founder)
+    public GroupDTO(GroupKeyDTO key, UserDTO founder, bool @private)
     {
         Key = key;
         Founder = founder;
+        IsPrivate = @private;
     }
 
-    public GroupKeyDTO Key { get; set; }
+    public GroupKeyDTO Key { get; set; }    
+    public bool IsPrivate { get; set; }
     public UserDTO Founder { get; set; }
     public List<UserDTO>? Users { get; set; }
 

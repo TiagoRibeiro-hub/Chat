@@ -5,6 +5,7 @@ using ChatService.Api.DTOS.Users;
 using ChatService.Domain.Models;
 using ChatService.Domain.Models.Groups;
 using ChatService.Domain.Models.Users;
+using ChatService.EndpointFilters;
 using ChatService.Infrastructure.Utils;
 using System.Net;
 
@@ -54,7 +55,7 @@ public static class GroupEndpoint
                 Data = res == null ? null : res.ToDto<GroupDTO, Group>(),
             };
 
-            if (ResultDTO<GroupDTO>.HasValue(result.Data))
+            if (ResultDTO<GroupDTO>.HasData(result.Data))
             {
                 result.Message = $"/user/create/{result.Data.Key.Identifier}";
                 result.StatusCode = HttpStatusCode.Created;
@@ -67,7 +68,8 @@ public static class GroupEndpoint
 
             return result;
         })
-        .GroupConfig("CreateGroup");
+        .GroupConfig("CreateGroup")
+        .AddEndpointFilter<CreateEndpointFilter>();
     }
 
     private static void Delete(this WebApplication app)
