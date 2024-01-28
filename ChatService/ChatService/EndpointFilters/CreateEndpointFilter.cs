@@ -1,5 +1,4 @@
-﻿
-using ChatService.Api.DTOS;
+﻿using ChatService.Api.DTOS;
 using ChatService.Api.DTOS.Groups;
 using ChatService.Api.DTOS.Users;
 using ChatService.Infrastructure.Hubs.Notifications;
@@ -22,7 +21,8 @@ public class CreateEndpointFilter : IEndpointFilter
 
         if (result is ResultDTO<UserDTO> userDto &&
             userDto.StatusCode == System.Net.HttpStatusCode.Created &&
-            ResultDTO<UserDTO>.HasData(userDto.Data))
+            ResultDTO<UserDTO>.HasData(userDto.Data)
+            )
         {
             _ = _notificationHubContext.Clients.All.JoinAsync(
                     new MessageDTO(
@@ -35,7 +35,8 @@ public class CreateEndpointFilter : IEndpointFilter
         else if (result is ResultDTO<GroupDTO> groupDto &&
             groupDto.StatusCode == System.Net.HttpStatusCode.Created &&
             ResultDTO<GroupDTO>.HasData(groupDto.Data) &&
-            !groupDto.Data.IsPrivate)
+            !groupDto.Data.IsPrivate
+            )
         {
             _ = _notificationHubContext.Clients.All.JoinAsync(
                     new MessageDTO(

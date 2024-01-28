@@ -15,7 +15,7 @@ public class Guards
     {
         if (obj == null)
         {
-            throw new Exception();
+            throw new Exception(nameof(obj));
         }
     }    
 

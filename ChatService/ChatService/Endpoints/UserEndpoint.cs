@@ -52,7 +52,7 @@ public static class UserEndpoint
 
     private static void Delete(this WebApplication app)
     {
-        app.MapDelete("/user/delete/{identifier}",
+        app.MapDelete("/user/delete/{identifier}:guid",
             async Task<ResultDTO<bool>>
             (Guid identifier, CoreServices coreServices) =>
         {
@@ -68,7 +68,7 @@ public static class UserEndpoint
 
     private static void Get(this WebApplication app)
     {
-        app.MapGet("/user/{identifier}",
+        app.MapGet("/user/{identifier}:guid",
             async Task<ResultDTO<UserDTO>>
             (Guid identifier, CoreServices coreServices) =>
         {
@@ -83,7 +83,7 @@ public static class UserEndpoint
 
     private static void GetGroups(this WebApplication app)
     {
-        app.MapGet("/user/groups/{identifier}",
+        app.MapGet("/user/groups/{identifier}:guid",
             async Task<ResultDTO<List<GroupDTO>>>
             (Guid identifier, CoreServices coreServices) =>
         {
@@ -98,7 +98,7 @@ public static class UserEndpoint
 
     private static void GetName(this WebApplication app)
     {
-        app.MapGet("/user/name/{identifier}",
+        app.MapGet("/user/name/{identifier}:guid",
             async Task<ResultDTO<string>>
             (Guid identifier, CoreServices coreServices) =>
         {

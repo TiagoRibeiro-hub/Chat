@@ -27,14 +27,14 @@ public static class GroupEndpoint
 
     private static void AddUser(this WebApplication app)
     {
-        app.MapPut("/group/user/{identifier}/{groupRolesType}",
+        app.MapPut("/group/user/{identifier}:guid/{groupRolesType}",
             async Task<ResultDTO<UserDTO>>
             (Guid identifier, GroupRolesTypesDTO groupRolesType, UserDTO user, CoreServices coreServices) =>
         {
             var res = await coreServices.GroupService.AddUserAsync(
                 new GroupKeyDTO(identifier).ToDomainKey<GroupKeyDTO, GroupKey>(),
                 user.ToDomain<UserDTO, User>(),
-                (GroupRolesTypes) groupRolesType
+                (GroupRolesTypes)groupRolesType
                 );
 
             return new ResultDTO<UserDTO>()
@@ -42,7 +42,8 @@ public static class GroupEndpoint
                 Data = res == null ? null : res.ToDto<UserDTO, User>()
             };
         })
-        .GroupConfig("AddUser");
+        .GroupConfig("AddUser")
+        .AddEndpointFilter<AssociationUserToGroupEndpointFilter>();
     }
 
     private static void Create(this WebApplication app)
@@ -76,7 +77,7 @@ public static class GroupEndpoint
 
     private static void Delete(this WebApplication app)
     {
-        app.MapDelete("/group/delete/{identifier}",
+        app.MapDelete("/group/delete/{identifier}:guid",
             async Task<ResultDTO<bool>>
             (Guid identifier, CoreServices coreServices) =>
         {
@@ -91,7 +92,7 @@ public static class GroupEndpoint
 
     private static void Get(this WebApplication app)
     {
-        app.MapGet("/group/{identifier}",
+        app.MapGet("/group/{identifier}:guid",
             async Task<ResultDTO<GroupDTO>>
             (Guid identifier, CoreServices coreServices) =>
         {
@@ -106,7 +107,7 @@ public static class GroupEndpoint
 
     private static void GetFounder(this WebApplication app)
     {
-        app.MapGet("/group/founder/{identifier}",
+        app.MapGet("/group/founder/{identifier}:guid",
             async Task<ResultDTO<UserDTO>>
             (Guid identifier, CoreServices coreServices) =>
         {
@@ -121,7 +122,7 @@ public static class GroupEndpoint
 
     private static void GetName(this WebApplication app)
     {
-        app.MapGet("/group/name/{identifier}",
+        app.MapGet("/group/name/{identifier}:guid",
             async Task<ResultDTO<string>>
             (Guid identifier, CoreServices coreServices) =>
         {
@@ -136,7 +137,7 @@ public static class GroupEndpoint
 
     private static void GetUsers(this WebApplication app)
     {
-        app.MapGet("/group/users/{identifier}",
+        app.MapGet("/group/users/{identifier}:guid",
             async Task<ResultDTO<List<UserDTO>>>
             (Guid identifier, CoreServices coreServices) =>
         {
@@ -166,7 +167,7 @@ public static class GroupEndpoint
 
     private static void RemoveUser(this WebApplication app)
     {
-        app.MapDelete("/group/user/{identifier}/{userIdentifier}",
+        app.MapDelete("/group/user/{identifier}:guid/{userIdentifier}:guid",
             async Task<ResultDTO<bool>>
             (Guid identifier, Guid userIdentifier, CoreServices coreServices) =>
             {
@@ -180,7 +181,8 @@ public static class GroupEndpoint
                     Data = res
                 };
             })
-        .GroupConfig("RemoveUser");
+        .GroupConfig("RemoveUser")
+        .AddEndpointFilter<DisassociationUserToGroupEndpointFilter>();
     }
 
     private static RouteHandlerBuilder GroupConfig(this RouteHandlerBuilder route, string name)

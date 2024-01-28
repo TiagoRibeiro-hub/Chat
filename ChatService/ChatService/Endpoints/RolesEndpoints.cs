@@ -17,7 +17,7 @@ public static class RolesEndpoints
     }
     private static void GetUserRoles(this WebApplication app)
     {
-        app.MapGet("/roles/user/{identifier}",
+        app.MapGet("/roles/user/{identifier}:guid",
             async Task<ResultDTO<List<GroupRolesDTO>>>
             (Guid identifier, CoreServices coreServices) =>
             {
@@ -32,7 +32,7 @@ public static class RolesEndpoints
 
     private static void GetGroupRoles(this WebApplication app)
     {
-        app.MapGet("/roles/group/{identifier}",
+        app.MapGet("/roles/group/{identifier}:guid",
             async Task<ResultDTO<List<GroupRolesDTO>>>
             (Guid identifier, CoreServices coreServices) =>
             {
@@ -47,7 +47,7 @@ public static class RolesEndpoints
 
     private static void UpdateGroupRole(this WebApplication app)
     {
-        app.MapPut("/roles/group/{identifier}",
+        app.MapPut("/roles/group/{identifier}:guid",
             async Task<ResultDTO<List<GroupRolesDTO>>>
             (Guid identifier, List<GroupRolesDTO> groupRoles, CoreServices coreServices) =>
             {
