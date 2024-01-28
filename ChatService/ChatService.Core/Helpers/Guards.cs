@@ -11,41 +11,29 @@ public class Guards
             throw new Exception();
         }
     }
-    public static void IsNotNull<T>([NotNull] T? obj)
+    public static void IsNotNullObject<T>([NotNull] T? obj)
     {
         if (obj == null)
         {
             throw new Exception();
         }
-    }
+    }    
 
     public static bool IsNull<T>([NotNullWhen(false)] T? obj)
     {
         return obj == null ? true : false;
     }
 
-    public static bool IsNotNullOrEmpty<T>([NotNullWhen(true)] IEnumerable<T>? obj)
+    public static bool IsNotNullOrEmptyCollection<T>([NotNullWhen(true)] IEnumerable<T>? obj)
     {
         return obj != null && obj.Any() ? true : false;
     }
 
-    public static void IsNotNullOrEmpty([NotNull] Guid? obj)
+    public static void IsNotNullOrEmptyGuid([NotNull] Guid? obj)
     {
         if (obj == null || obj == Guid.Empty)
         {
             throw new Exception();
         }
-    }
-}
-
-public class Parses
-{
-    public static Guid TryParseGuid(string? obj)
-    {
-        if (!Guid.TryParse(obj, out Guid guid))
-        {
-            throw new Exception();
-        }
-        return guid;
     }
 }

@@ -1,4 +1,5 @@
-﻿using ChatService.Domain.Models;
+﻿using ChatService.Core.Helpers;
+using ChatService.Domain.Models;
 using ChatService.Domain.Models.Groups;
 using ChatService.Domain.Models.Users;
 using ChatService.Infrastructure.Data;
@@ -25,7 +26,7 @@ public sealed class UserRepository : IUserRepository
         return await _baseRepository.DeleteAsync<User, UserKey>(key);
     }
 
-    public async Task<User> GetAsync(UserKey key)
+    public async Task<User?> GetAsync(UserKey key)
     {
         return await _baseRepository.GetAsync<User, UserKey>(key);
     }
@@ -33,12 +34,20 @@ public sealed class UserRepository : IUserRepository
     public async Task<List<Group>?> GetGroupsAsync(UserKey key)
     {
         var user = await GetAsync(key);
+        if (Guards.IsNull(user))
+        {
+            throw new Exception("User not found");
+        }
         return user.Groups;
     }
 
     public async Task<string?> GetNameAsync(UserKey key)
     {
         var user = await GetAsync(key);
+        if (Guards.IsNull(user))
+        {
+            throw new Exception("User not found");
+        }
         return user.Key.Name;
     }
 

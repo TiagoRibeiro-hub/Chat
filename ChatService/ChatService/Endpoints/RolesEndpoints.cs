@@ -5,7 +5,6 @@ using ChatService.Api.DTOS.Users;
 using ChatService.Domain.Models;
 using ChatService.Domain.Models.Groups;
 using ChatService.Infrastructure.Utils;
-using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace ChatService.Endpoints;
 public static class RolesEndpoints

@@ -8,12 +8,11 @@ namespace ChatService.Core.Repositories;
 public sealed class BaseRepository<TContext> : IBaseRepository<TContext>
     where TContext : DbContext, new()
 {
-
-    private readonly IUnitOfWork<TContext> _unitOfWork;
+    public IUnitOfWork<TContext> UnitOfWork { get; }
 
     public BaseRepository(IUnitOfWork<TContext> unitOfWork)
     {
-        _unitOfWork = unitOfWork;
+        UnitOfWork = unitOfWork;
     }
 
     public async Task<T> CreateAsync<T, K>(T item) where T : Base<K> where K : ItemKey
@@ -24,13 +23,13 @@ public sealed class BaseRepository<TContext> : IBaseRepository<TContext>
             {
                 throw new Exception("Entity");
             }
-            var entityTracker = await _unitOfWork.Context.Set<T>().AddAsync(item);
+            var entityTracker = await UnitOfWork.Context.Set<T>().AddAsync(item);
             if (entityTracker.State != EntityState.Added)
             {
                 throw new Exception();
             }
 
-            _unitOfWork.Save();
+            UnitOfWork.Save();
             return entityTracker.Entity;
         }
         catch (Exception)
@@ -43,13 +42,13 @@ public sealed class BaseRepository<TContext> : IBaseRepository<TContext>
     {
         try
         {
-            var entityTracker = _unitOfWork.Context.Set<T>().Remove(await GetAsync<T, K>(key));
+            var entityTracker = UnitOfWork.Context.Set<T>().Remove(await GetAsync<T, K>(key));
             if (entityTracker.State != EntityState.Deleted)
             {
                 throw new Exception();
             }
 
-            _unitOfWork.Save();
+            UnitOfWork.Save();
             return true;
         }
         catch (Exception)
@@ -58,16 +57,10 @@ public sealed class BaseRepository<TContext> : IBaseRepository<TContext>
         }
     }
 
-    public async Task<T> GetAsync<T, K>(K key) where T : Base<K> where K : ItemKey
+    public async Task<T?> GetAsync<T, K>(K key) where T : Base<K> where K : ItemKey
     {
-        var entity = await _unitOfWork.Context.Set<T>().Where(x => x.Key.Identifier == key.Identifier)
+        var entity = await UnitOfWork.Context.Set<T>().Where(x => x.Key.Identifier == key.Identifier)
                             .FirstOrDefaultAsync();
-
-        if (entity == null)
-        {
-            throw new Exception();
-        }
-
         return entity;
     }
 
@@ -80,7 +73,7 @@ public sealed class BaseRepository<TContext> : IBaseRepository<TContext>
         }
         else
         {
-            list = await _unitOfWork.Context.Set<T>().ToListAsync();
+            list = await UnitOfWork.Context.Set<T>().ToListAsync();
         }
 
         return list;
@@ -90,13 +83,13 @@ public sealed class BaseRepository<TContext> : IBaseRepository<TContext>
     {
         try
         {
-            var entityTracker = _unitOfWork.Context.Set<T>().Update(item);
+            var entityTracker = UnitOfWork.Context.Set<T>().Update(item);
             if (entityTracker.State != EntityState.Modified)
             {
                 throw new Exception();
             }
 
-            _unitOfWork.Save();
+            UnitOfWork.Save();
             return Task.FromResult(true);
         }
         catch (Exception)

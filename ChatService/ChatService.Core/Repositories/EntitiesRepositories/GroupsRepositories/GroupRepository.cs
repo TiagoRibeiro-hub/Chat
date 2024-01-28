@@ -1,8 +1,10 @@
-﻿using ChatService.Domain.Models;
+﻿using ChatService.Core.Helpers;
+using ChatService.Domain.Models;
 using ChatService.Domain.Models.Groups;
 using ChatService.Domain.Models.Users;
 using ChatService.Infrastructure.Data;
 using ChatService.Infrastructure.Data.Abstractions;
+using Microsoft.EntityFrameworkCore;
 
 namespace ChatService.Core.Repositories.EntitiesRepositories.GroupsRepositories;
 
@@ -15,9 +17,72 @@ public sealed class GroupRepository : IGroupRepository
         _baseRepository = baseRepository;
     }
 
-    public Task<User> AddUserAsync(GroupKey key, User user)
+    public async Task<User> AddUserAsync(GroupKey key, User user, GroupRolesTypes groupRolesType)
     {
-        throw new NotImplementedException();
+        try
+        {
+            _baseRepository.UnitOfWork.CreateTransaction();
+
+            #region Add User To Group
+
+            Group? group = await GetAsync(key);
+
+            Guards.IsNotNullObject(group);
+
+            if (!Guards.IsNull(group.Users) && group.Users.Any(u => u.Key.Identifier == user.Key.Identifier))
+            {
+                throw new Exception();
+            }
+            else if (Guards.IsNull(group.Users))
+            {
+                group.Users = new();
+            }
+            group.Users.Add(user);
+
+            var groupTracker = _baseRepository.UnitOfWork.Context.Set<Group>().Update(group);
+            if (groupTracker.State != EntityState.Modified)
+            {
+                throw new Exception();
+            }
+
+            _baseRepository.UnitOfWork.Commit();
+
+            #endregion
+
+            #region Update User
+
+            if (!Guards.IsNotNullOrEmptyCollection(user.Groups))
+            {
+                user.Groups = new();
+            }
+            user.Groups.Add(group);
+
+            if (!Guards.IsNotNullOrEmptyCollection(user.Roles))
+            {
+                user.Roles = new();
+            }
+
+            user.Roles.Add(new GroupRoles(groupRolesType, user.Key)
+            {
+                Group = group.Key
+            });
+
+            var userTracker = _baseRepository.UnitOfWork.Context.Set<User>().Update(user);
+            if (userTracker.State != EntityState.Modified)
+            {
+                throw new Exception();
+            }
+
+            _baseRepository.UnitOfWork.Save();
+            #endregion
+
+            return user;
+        }
+        catch (Exception)
+        {
+            _baseRepository.UnitOfWork.Rollback();
+            throw new Exception();
+        }
     }
 
     public async Task<Group> CreateAsync(Group item)
@@ -30,7 +95,7 @@ public sealed class GroupRepository : IGroupRepository
         return await _baseRepository.DeleteAsync<Group, GroupKey>(key);
     }
 
-    public async Task<Group> GetAsync(GroupKey key)
+    public async Task<Group?> GetAsync(GroupKey key)
     {
         return await _baseRepository.GetAsync<Group, GroupKey>(key);
     }
@@ -38,24 +103,111 @@ public sealed class GroupRepository : IGroupRepository
     public async Task<User> GetFounderAsync(GroupKey key)
     {
         var group = await GetAsync(key);
+        if (Guards.IsNull(group))
+        {
+            throw new Exception("Group not found");
+        }
         return group.Founder;
     }
 
     public async Task<string?> GetNameAsync(GroupKey key)
     {
         var group = await GetAsync(key);
-        return group.Key.Name;
+        return group?.Key.Name;
     }
 
     public async Task<List<User>?> GetUsersAsync(GroupKey key)
     {
         var group = await GetAsync(key);
-        return group.Users;
+        return group?.Users;
     }
 
     public async Task<List<Group>> ListAsync(bool complete)
     {
         return await _baseRepository.ListAsync<Group, GroupKey>(complete);
+    }
+
+    public async Task<bool> RemoveUserAsync(GroupKey key, UserKey userKey)
+    {
+        try
+        {
+            _baseRepository.UnitOfWork.CreateTransaction();
+
+            #region Remove User From Group
+
+            Group? group = await GetAsync(key);
+
+            if (Guards.IsNull(group))
+            {
+                throw new Exception("Group not found");
+            }
+            
+            var user = await _baseRepository.UnitOfWork.Context.Set<User>().FirstOrDefaultAsync(x => x.Key.Identifier == userKey.Identifier);
+            if (Guards.IsNull(user))
+            {
+                throw new Exception("User not found");
+            }
+
+            if (Guards.IsNull(group.Users) || !group.Users.Any(u => u.Key.Identifier == user.Key.Identifier))
+            {
+                throw new Exception("Group has no users");
+            }
+
+            group.Users.Remove(user);
+
+            var groupTracker = _baseRepository.UnitOfWork.Context.Set<Group>().Update(group);
+            if (groupTracker.State != EntityState.Modified)
+            {
+                throw new Exception();
+            }
+
+            _baseRepository.UnitOfWork.Commit();
+
+            #endregion
+
+            #region Update User
+
+            if (!Guards.IsNotNullOrEmptyCollection(user.Groups))
+            {
+                throw new Exception("Group has no users");
+            }
+
+            if (!Guards.IsNotNullOrEmptyCollection(user.Roles))
+            {
+                throw new Exception("User has no roles");
+            }
+
+            var currentUserRole = user.Roles.FirstOrDefault(
+                                        ur => ur.UserKey.Identifier == user.Key.Identifier &&
+                                        ur.Group?.Identifier == group.Key.Identifier
+                                        );
+
+            if (Guards.IsNull(currentUserRole))
+            {
+                throw new Exception("User role not found");
+            }
+
+            if (!user.Groups.Remove(group) || !user.Roles.Remove(currentUserRole))
+            {
+                throw new Exception();
+            }
+
+            var userTracker = _baseRepository.UnitOfWork.Context.Set<User>().Update(user);
+            if (userTracker.State != EntityState.Modified)
+            {
+                throw new Exception();
+            }
+            _baseRepository.UnitOfWork.Save();
+
+            #endregion
+
+            return await Task.FromResult(true);
+        }
+        catch (Exception ex)
+        {
+            _baseRepository.UnitOfWork.Rollback();
+            throw new Exception();
+        }
     }
 
     public async Task<bool> UpdateAsync(Group item)

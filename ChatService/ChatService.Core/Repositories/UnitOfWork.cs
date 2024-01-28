@@ -22,6 +22,12 @@ public class UnitOfWork<TContext> : IUnitOfWork<TContext>
         _objTran = Context.Database.BeginTransaction();
     }
 
+    public void Dispose()
+    {
+        IsTransactionNotNull(_objTran);
+        _objTran.Dispose();
+    }
+
     public void Commit()
     {
         IsTransactionNotNull(_objTran);

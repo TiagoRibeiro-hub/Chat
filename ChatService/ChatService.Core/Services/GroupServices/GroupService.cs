@@ -6,7 +6,7 @@ namespace ChatService.Core.Services.GroupServices;
 
 internal sealed class GroupService : IGroupService
 {
-    public Task<User> AddUserAsync(GroupKey key, User user)
+    public Task<User> AddUserAsync(GroupKey key, User user, GroupRolesTypes groupRolesType)
     {
         throw new NotImplementedException();
     }
@@ -42,6 +42,11 @@ internal sealed class GroupService : IGroupService
     }
 
     public Task<List<Group>> ListAsync(bool complete)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task<bool> RemoveUserAsync(GroupKey key, UserKey userKey)
     {
         throw new NotImplementedException();
     }

@@ -15,7 +15,7 @@ public sealed class GroupDTO : BaseDTO<GroupDTO, Group>
         IsPrivate = @private;
     }
 
-    public GroupKeyDTO Key { get; set; }    
+    public GroupKeyDTO Key { get; set; }
     public bool IsPrivate { get; set; }
     public UserDTO Founder { get; set; }
     public List<UserDTO>? Users { get; set; }
@@ -27,7 +27,7 @@ public sealed class GroupDTO : BaseDTO<GroupDTO, Group>
 
     internal override void ValidateKeys(List<GroupDTO>? groups)
     {
-        if (Guards.IsNotNullOrEmpty(groups))
+        if (Guards.IsNotNullOrEmptyCollection(groups))
         {
             for (int i = 0; i < groups.Count; i++)
             {

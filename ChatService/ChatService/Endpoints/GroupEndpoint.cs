@@ -22,17 +22,19 @@ public static class GroupEndpoint
         app.GetName();
         app.GetUsers();
         app.List();
+        app.RemoveUser();
     }
 
     private static void AddUser(this WebApplication app)
     {
-        app.MapPut("/group/user/{identifier}",
+        app.MapPut("/group/user/{identifier}/{groupRolesType}",
             async Task<ResultDTO<UserDTO>>
-            (Guid identifier, UserDTO user, CoreServices coreServices) =>
+            (Guid identifier, GroupRolesTypesDTO groupRolesType, UserDTO user, CoreServices coreServices) =>
         {
             var res = await coreServices.GroupService.AddUserAsync(
                 new GroupKeyDTO(identifier).ToDomainKey<GroupKeyDTO, GroupKey>(),
-                user.ToDomain<UserDTO, User>()
+                user.ToDomain<UserDTO, User>(),
+                (GroupRolesTypes) groupRolesType
                 );
 
             return new ResultDTO<UserDTO>()
@@ -160,6 +162,25 @@ public static class GroupEndpoint
             };
         })
         .GroupConfig("ListGroups");
+    }
+
+    private static void RemoveUser(this WebApplication app)
+    {
+        app.MapDelete("/group/user/{identifier}/{userIdentifier}",
+            async Task<ResultDTO<bool>>
+            (Guid identifier, Guid userIdentifier, CoreServices coreServices) =>
+            {
+                var res = await coreServices.GroupService.RemoveUserAsync(
+                    new GroupKeyDTO(identifier).ToDomainKey<GroupKeyDTO, GroupKey>(),
+                    new UserKeyDTO(userIdentifier).ToDomainKey<UserKeyDTO, UserKey>()
+                    );
+
+                return new ResultDTO<bool>()
+                {
+                    Data = res
+                };
+            })
+        .GroupConfig("RemoveUser");
     }
 
     private static RouteHandlerBuilder GroupConfig(this RouteHandlerBuilder route, string name)

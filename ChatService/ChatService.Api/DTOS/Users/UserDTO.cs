@@ -24,7 +24,7 @@ public sealed class UserDTO : BaseDTO<UserDTO, User>
 
     internal override void ValidateKeys(List<UserDTO>? users)
     {
-        if (Guards.IsNotNullOrEmpty(users))
+        if (Guards.IsNotNullOrEmptyCollection(users))
         {
             for (int i = 0; i < users.Count; i++)
             {

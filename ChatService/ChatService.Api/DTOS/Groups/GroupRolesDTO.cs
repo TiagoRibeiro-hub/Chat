@@ -5,14 +5,14 @@ using ChatService.Domain.Models.Groups;
 namespace ChatService.Api.DTOS.Groups;
 public sealed class GroupRolesDTO : BaseDTO<GroupRolesDTO, GroupRoles>
 {
-    public GroupRolesDTO(GroupRolesTypesDTO groupRolesType, UserKeyDTO user)
+    public GroupRolesDTO(GroupRolesTypesDTO groupRolesType, UserKeyDTO userKey)
     {
         GroupRolesType = groupRolesType;
-        User = user;
+        UserKey = userKey;
     }
 
     public GroupRolesTypesDTO GroupRolesType { get; set; }
-    public UserKeyDTO User { get; set; }
+    public UserKeyDTO UserKey { get; set; }
     public GroupKeyDTO? Group { get; set; }
 
     internal override void ValidateKey()
@@ -21,12 +21,12 @@ public sealed class GroupRolesDTO : BaseDTO<GroupRolesDTO, GroupRoles>
         {
             Group.ValidateIdentifier();
         }
-        User.ValidateIdentifier();
+        UserKey.ValidateIdentifier();
     }
 
     internal override void ValidateKeys(List<GroupRolesDTO>? roles)
     {
-        if (Guards.IsNotNullOrEmpty(roles))
+        if (Guards.IsNotNullOrEmptyCollection(roles))
         {
             for (int i = 0; i < roles.Count; i++)
             {

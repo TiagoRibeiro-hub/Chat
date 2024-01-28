@@ -9,7 +9,7 @@ public abstract class KeyDTO<D, E>
 
     public void ValidateIdentifier()
     {
-        Guards.IsNotNullOrEmpty(this.Identifier);
+        Guards.IsNotNullOrEmptyGuid(this.Identifier);
     }
 
     public abstract void DTOValidation();

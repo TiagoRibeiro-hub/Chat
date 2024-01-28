@@ -57,7 +57,7 @@ public sealed class ChatGroupHub : Hub<IChatGroupHub>
         List<MessageDTO>? messagesListDTO = null; // TODO Bd messages from group 
         if (messagesListDTO == null)
         {
-            var messageDTO = new MessageDTO(userGroupDTO.User, "Has joined the group", DateTime.UtcNow);
+            var messageDTO = new MessageDTO(userGroupDTO.User, "Is connected with the group", DateTime.UtcNow);
             await Clients.Group(userGroupDTO.Group.Key.Identifier.ToString()).JoinAsync(messageDTO);
 
             _groupMessages![userGroupDTO.Group.Key.Identifier] = _groupMessages.GetMessagesDTO(userGroupDTO.Group.Key.Identifier, messageDTO);
@@ -75,7 +75,7 @@ public sealed class ChatGroupHub : Hub<IChatGroupHub>
     {
         userGroupDTO.Group.Key.ValidateIdentifier();
 
-        var messageDTO = new MessageDTO(userGroupDTO.User, "Has left the group", DateTime.UtcNow);
+        var messageDTO = new MessageDTO(userGroupDTO.User, "Is disconnected with the group", DateTime.UtcNow);
 
         _ = _groupConnections!.Remove(Context.ConnectionId);
         await SendConnectedUserGroupDTO(userGroupDTO.Group.Key);
