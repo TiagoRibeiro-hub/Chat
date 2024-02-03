@@ -4,14 +4,12 @@ namespace ChatService.Domain.Entities.Groups;
 
 public sealed class GroupRoles
 {
-    public GroupRoles(GroupRolesTypes groupRolesType, UserKey userKey)
+    public GroupRoles(GroupRolesTypes groupRolesType, GroupKey group)
     {
         GroupRolesType = groupRolesType;
-        UserKey = userKey;
+        Group = group;
     }
 
-    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
-    public GroupKey? Group { get; set; }
+    public GroupKey Group { get; set; }
     public GroupRolesTypes GroupRolesType { get; set; }
-    public UserKey UserKey { get; set; }
 }

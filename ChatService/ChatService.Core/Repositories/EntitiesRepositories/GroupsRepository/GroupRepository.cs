@@ -29,15 +29,13 @@ public sealed class GroupRepository : IGroupRepository
 
             Guards.IsNotNullObject(group);
 
-            if (!Guards.IsNull(group.Users) && group.Users.Any(u => u.Key.Identifier == user.Key.Identifier))
+            if (!Guards.IsNotNullOrEmptyCollection(group.Users) || 
+                group.Users.Any(u => u.Identifier == user.Key.Identifier))
             {
                 throw new Exception();
             }
-            else if (Guards.IsNull(group.Users))
-            {
-                group.Users = new();
-            }
-            group.Users.Add(user);
+
+            group.Users.Add(user.Key);
 
             var groupTracker = _baseRepository.UnitOfWork.Context.Set<Group>().Update(group);
             if (groupTracker.State != EntityState.Modified)
@@ -53,19 +51,17 @@ public sealed class GroupRepository : IGroupRepository
 
             if (!Guards.IsNotNullOrEmptyCollection(user.Groups))
             {
-                user.Groups = new();
+                throw new Exception();
             }
+
             user.Groups.Add(group);
 
             if (!Guards.IsNotNullOrEmptyCollection(user.Roles))
             {
-                user.Roles = new();
+                throw new Exception();
             }
 
-            user.Roles.Add(new GroupRoles(groupRolesType, user.Key)
-            {
-                Group = group.Key
-            });
+            user.Roles.Add(new GroupRoles(groupRolesType, key));
 
             var userTracker = _baseRepository.UnitOfWork.Context.Set<User>().Update(user);
             if (userTracker.State != EntityState.Modified)
@@ -107,19 +103,37 @@ public sealed class GroupRepository : IGroupRepository
         {
             throw new Exception("Group not found");
         }
-        return group.Founder;
+        var user = await _baseRepository.UnitOfWork.Context.Set<User>().FirstOrDefaultAsync(x => x.Key.Identifier == group.Founder);
+        if (Guards.IsNull(user))
+        {
+            throw new Exception("User not found");
+        }
+        return user;
     }
 
-    public async Task<string?> GetNameAsync(GroupKey key)
+    public async Task<string> GetNameAsync(GroupKey key)
     {
         var group = await GetAsync(key);
-        return group?.Key.Name;
+        if (Guards.IsNull(group))
+        {
+            throw new Exception("Group not found");
+        }
+        return group.Key.Name;
     }
 
     public async Task<List<User>?> GetUsersAsync(GroupKey key)
     {
         var group = await GetAsync(key);
-        return group?.Users;
+        if (Guards.IsNull(group))
+        {
+            throw new Exception("Group not found");
+        }
+        var users = await _baseRepository.UnitOfWork.Context.Set<User>().ToListAsync();
+        if (!Guards.IsNotNullOrEmptyCollection(users))
+        {
+            throw new Exception("Users not found");
+        }
+        return users;
     }
 
     public async Task<List<Group>> ListAsync(bool complete)
@@ -148,12 +162,12 @@ public sealed class GroupRepository : IGroupRepository
                 throw new Exception("User not found");
             }
 
-            if (Guards.IsNull(group.Users) || !group.Users.Any(u => u.Key.Identifier == user.Key.Identifier))
+            if (Guards.IsNull(group.Users) || !group.Users.Any(u => u.Identifier == user.Key.Identifier))
             {
                 throw new Exception("Group has no users");
             }
 
-            group.Users.Remove(user);
+            group.Users.Remove(user.Key);
 
             var groupTracker = _baseRepository.UnitOfWork.Context.Set<Group>().Update(group);
             if (groupTracker.State != EntityState.Modified)
@@ -177,8 +191,7 @@ public sealed class GroupRepository : IGroupRepository
                 throw new Exception("User has no roles");
             }
 
-            var currentUserRole = user.Roles.FirstOrDefault(
-                                        ur => ur.UserKey.Identifier == user.Key.Identifier &&
+            var currentUserRole = user.Roles.FirstOrDefault(ur =>
                                         ur.Group?.Identifier == group.Key.Identifier
                                         );
 

@@ -1,4 +1,5 @@
-﻿using ChatService.Domain.Entities;
+﻿using ChatService.Core.Helpers;
+using ChatService.Domain.Entities;
 using System.Text.Json.Serialization;
 
 namespace ChatService.Api.DTOS.Users;
@@ -20,5 +21,16 @@ public sealed class UserKeyDTO : KeyDTO<UserKeyDTO, UserKey>
     public override void DTOValidation()
     {
         ValidateIdentifier();
+    }
+
+    internal static void ValidateKeys(List<UserKeyDTO>? keys)
+    {
+        if (Guards.IsNotNullOrEmptyCollection(keys))
+        {
+            for (int i = 0; i < keys.Count; i++)
+            {
+                keys[i].DTOValidation();
+            }
+        }
     }
 }

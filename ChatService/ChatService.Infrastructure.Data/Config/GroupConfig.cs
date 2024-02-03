@@ -19,14 +19,8 @@ public sealed class GroupConfig : IEntityTypeConfiguration<Group>
             .HasColumnName("group_name")
             .IsRequired();
 
-        builder.Property(x => x.Founder.Key.Identifier).HasColumnType("uniqueidentifier")
-            .HasColumnName("founder_id")
-            .IsRequired();
-
-        builder.Property(x => x.Founder.Key.Name).HasColumnType("nvarchar(150)")
-            .HasColumnName("founder_name")
-            .IsRequired();
-
+        builder.Property(x => x.Founder).HasColumnType("uniqueidentifier").IsRequired();
+        
         builder.Property(x => x.IsPrivate).HasColumnType("bit").IsRequired();
 
         builder.OwnsMany(x => x.Users, j =>
@@ -34,13 +28,11 @@ public sealed class GroupConfig : IEntityTypeConfiguration<Group>
             j.ToJson();
         });
 
-
         // Keys
         builder.HasKey(x => x.Key.Identifier);
 
         // Indexes
         builder.HasIndex(x => x.Key.Identifier).IsUnique();
-        builder.HasIndex(x => x.Founder.Key.Identifier).IsUnique();
         builder.HasIndex(x => x.IsPrivate);
 
         // Table Name

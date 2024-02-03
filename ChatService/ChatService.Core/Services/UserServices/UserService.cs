@@ -34,7 +34,7 @@ internal sealed class UserService : IUserService
         throw new NotImplementedException();
     }
 
-    public Task<string?> GetNameAsync(UserKey key)
+    public Task<string> GetNameAsync(UserKey key)
     {
         throw new NotImplementedException();
     }

@@ -41,7 +41,7 @@ public sealed class UserRepository : IUserRepository
         return user.Groups;
     }
 
-    public async Task<string?> GetNameAsync(UserKey key)
+    public async Task<string> GetNameAsync(UserKey key)
     {
         var user = await GetAsync(key);
         if (Guards.IsNull(user))

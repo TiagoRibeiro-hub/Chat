@@ -31,7 +31,7 @@ internal sealed class GroupService : IGroupService
         throw new NotImplementedException();
     }
 
-    public Task<string?> GetNameAsync(GroupKey key)
+    public Task<string> GetNameAsync(GroupKey key)
     {
         throw new NotImplementedException();
     }

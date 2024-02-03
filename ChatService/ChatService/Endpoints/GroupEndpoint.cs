@@ -27,7 +27,7 @@ public static class GroupEndpoint
 
     private static void AddUser(this WebApplication app)
     {
-        app.MapPut("/group/user/{identifier}:guid/{groupRolesType}",
+        app.MapPut("/group/{identifier}:guid/user/{groupRolesType}",
             async Task<ResultDTO<UserDTO>>
             (Guid identifier, GroupRolesTypesDTO groupRolesType, UserDTO user, CoreServices coreServices) =>
         {
@@ -58,6 +58,7 @@ public static class GroupEndpoint
             (GroupDTO group, CoreServices coreServices) =>
         {
             var res = await coreServices.GroupService.CreateAsync(group.ToDomain<GroupDTO, Group>());
+
             var result = new ResultDTO<GroupDTO>()
             {
                 Data = res == null ? null : res.ToDto<GroupDTO, Group>(),

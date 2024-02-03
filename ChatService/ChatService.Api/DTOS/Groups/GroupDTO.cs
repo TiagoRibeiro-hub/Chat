@@ -1,24 +1,21 @@
 ﻿using ChatService.Api.DTOS.Users;
-using ChatService.Api.Utils;
 using ChatService.Core.Helpers;
 using ChatService.Domain.Entities.Groups;
-using ChatService.Domain.Entities.Users;
 
 namespace ChatService.Api.DTOS.Groups;
 
 public sealed class GroupDTO : BaseDTO<GroupDTO, Group>
 {
-    public GroupDTO(GroupKeyDTO key, UserDTO founder, bool @private)
+    public GroupDTO(GroupKeyDTO key)
     {
         Key = key;
-        Founder = founder;
-        IsPrivate = @private;
+        IsPrivate = false;
     }
 
     public GroupKeyDTO Key { get; set; }
     public bool IsPrivate { get; set; }
-    public UserDTO Founder { get; set; }
-    public List<UserDTO>? Users { get; set; }
+    public Guid? Founder { get; set; }
+    public List<UserKeyDTO>? Users { get; set; }
 
     internal override void ValidateKey()
     {
@@ -39,7 +36,6 @@ public sealed class GroupDTO : BaseDTO<GroupDTO, Group>
     public override void DTOValidation()
     {
         ValidateKey();
-        Founder.ValidateKey();
-        Users.ValidateKeys<UserDTO, User>();
+        UserKeyDTO.ValidateKeys(Users);
     }
 }

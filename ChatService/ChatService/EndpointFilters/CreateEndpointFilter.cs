@@ -3,6 +3,7 @@ using ChatService.Api.DTOS;
 using ChatService.Api.DTOS.Groups;
 using ChatService.Api.DTOS.Messages;
 using ChatService.Api.DTOS.Users;
+using ChatService.Core.Helpers;
 using ChatService.Domain.Entities.Messages;
 using ChatService.Infrastructure.Hubs.Notifications;
 using Microsoft.AspNetCore.SignalR;
@@ -42,15 +43,27 @@ public class CreateEndpointFilter : IEndpointFilter
             !groupDto.Data.IsPrivate
             )
         {
+            if (!Guards.IsNotNullOrEmptyCollection(groupDto.Data.Users))
+            {
+                throw new Exception();
+            }
+
             var date = DateTime.UtcNow;
 
             StringBuilder message = new();
-            message.Append(groupDto.Data.Founder.Key.Name).Append("has created the group");
+            var founder = groupDto.Data.Users.FirstOrDefault(x => x.Identifier == groupDto.Data.Founder);
+            
+            if (Guards.IsNull(founder))
+            {
+                throw new Exception();
+            }
+
+            message.Append(founder.Name).Append("has created the group");
 
             GroupMessages groupMessages = new(groupDto.Data.Key.Identifier, new()
             {
                 new UserMessage(
-                    groupDto.Data.Founder.Key.Identifier,
+                    founder.Identifier,
                     message.ToString(),
                     date
                     )
@@ -62,7 +75,7 @@ public class CreateEndpointFilter : IEndpointFilter
 
             _ = _notificationHubContext.Clients.All.JoinAsync(
                     new UserMessageDTO(
-                        groupDto.Data.Founder.Key.Identifier,
+                        founder.Identifier,
                         message.ToString(),
                         date)
                     );

@@ -1,19 +1,17 @@
-﻿using ChatService.Api.DTOS.Users;
-using ChatService.Core.Helpers;
+﻿using ChatService.Core.Helpers;
 using ChatService.Domain.Entities.Groups;
 
 namespace ChatService.Api.DTOS.Groups;
 public sealed class GroupRolesDTO : BaseDTO<GroupRolesDTO, GroupRoles>
 {
-    public GroupRolesDTO(GroupRolesTypesDTO groupRolesType, UserKeyDTO userKey)
+    public GroupRolesDTO(GroupRolesTypesDTO groupRolesType, GroupKeyDTO group)
     {
         GroupRolesType = groupRolesType;
-        UserKey = userKey;
+        Group = group;
     }
 
     public GroupRolesTypesDTO GroupRolesType { get; set; }
-    public UserKeyDTO UserKey { get; set; }
-    public GroupKeyDTO? Group { get; set; }
+    public GroupKeyDTO Group { get; set; }
 
     internal override void ValidateKey()
     {
@@ -21,7 +19,6 @@ public sealed class GroupRolesDTO : BaseDTO<GroupRolesDTO, GroupRoles>
         {
             Group.ValidateIdentifier();
         }
-        UserKey.ValidateIdentifier();
     }
 
     internal override void ValidateKeys(List<GroupRolesDTO>? roles)
