@@ -16,9 +16,15 @@ public sealed class UserConfig : IEntityTypeConfiguration<User>
         builder.Property(x => x.Key.Name).HasColumnType("nvarchar(150)")
             .IsRequired();
 
-        builder.Property(x => x.Groups).HasJsonPropertyName("Groups");
-
-        builder.Property(x => x.Roles).HasJsonPropertyName("Roles");
+        builder.OwnsMany(x => x.Groups, j =>
+        {
+            j.ToJson();
+        });        
+        
+        builder.OwnsMany(x => x.Roles, j =>
+        {
+            j.ToJson();
+        });
 
         // Keys
         builder.HasKey(x => x.Key.Identifier);

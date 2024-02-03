@@ -9,7 +9,8 @@ public sealed class GroupConfig : IEntityTypeConfiguration<Group>
 {
     public void Configure(EntityTypeBuilder<Group> builder)
     {
-        builder.Property(x => x.Key.Identifier).HasColumnType("uniqueidentifier")
+        builder.Property(x => x.Key.Identifier)
+            .HasColumnType("uniqueidentifier")
             .HasColumnName("group_id")
             .IsRequired()
             .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
@@ -26,19 +27,19 @@ public sealed class GroupConfig : IEntityTypeConfiguration<Group>
             .HasColumnName("founder_name")
             .IsRequired();
 
-        builder.Property(x => x.Users).HasJsonPropertyName("Users");
-
         builder.Property(x => x.IsPrivate).HasColumnType("bit").IsRequired();
 
-        // Relations
-        builder.HasOne(x => x.Founder).WithMany(x => x.Groups).HasForeignKey(x => x.Key.Identifier).OnDelete(DeleteBehavior.Cascade);
+        builder.OwnsMany(x => x.Users, j =>
+        {
+            j.ToJson();
+        });
+
 
         // Keys
         builder.HasKey(x => x.Key.Identifier);
 
         // Indexes
         builder.HasIndex(x => x.Key.Identifier).IsUnique();
-        builder.HasIndex(x => x.Key.Name);
         builder.HasIndex(x => x.Founder.Key.Identifier).IsUnique();
         builder.HasIndex(x => x.IsPrivate);
 

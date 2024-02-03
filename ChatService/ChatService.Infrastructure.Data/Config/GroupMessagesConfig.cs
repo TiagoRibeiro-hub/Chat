@@ -9,9 +9,12 @@ public sealed class GroupMessagesConfig : IEntityTypeConfiguration<GroupMessages
     public void Configure(EntityTypeBuilder<GroupMessages> builder)
     {
         builder.Property(x => x.GroupIdentifier).HasColumnType("uniqueidentifier").IsRequired();
-        builder.Property(x => x.Messages).HasJsonPropertyName("Messages").IsRequired();
 
-        // Relations
+        builder.OwnsMany(x => x.Messages, j =>
+        {
+            j.ToJson();
+        });
+
 
         // Keys
         builder.HasIndex(x => x.GroupIdentifier);
