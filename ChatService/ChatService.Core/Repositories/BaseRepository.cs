@@ -1,4 +1,5 @@
-﻿using ChatService.Domain.Entities;
+﻿using ChatService.Core.Helpers;
+using ChatService.Domain.Entities;
 using ChatService.Infrastructure.Data.Abstractions;
 using Microsoft.EntityFrameworkCore;
 using ItemKey = ChatService.Domain.Entities.Key;
@@ -42,7 +43,13 @@ public sealed class BaseRepository<TContext> : IBaseRepository<TContext>
     {
         try
         {
-            var entityTracker = UnitOfWork.Context.Set<T>().Remove(await GetAsync<T, K>(key));
+            var entity = await GetAsync<T, K>(key);
+            if (Guards.IsNull(entity))
+            {
+                throw new Exception();
+            }
+
+            var entityTracker = UnitOfWork.Context.Set<T>().Remove(entity);
             if (entityTracker.State != EntityState.Deleted)
             {
                 throw new Exception();

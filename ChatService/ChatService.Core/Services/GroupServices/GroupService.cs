@@ -1,59 +1,119 @@
 ﻿using ChatService.Domain.Entities;
 using ChatService.Domain.Entities.Groups;
 using ChatService.Domain.Entities.Users;
+using ChatService.Infrastructure.Data;
+using ChatService.Infrastructure.Data.Abstractions;
+using ChatService.Core.Repositories.EntitiesRepositories.GroupsRepositories;
+using ChatService.Core.Helpers;
 
 namespace ChatService.Core.Services.GroupServices;
 
 internal sealed class GroupService : IGroupService
 {
-    public Task<User> AddUserAsync(GroupKey key, User user, GroupRolesTypes groupRolesType)
+    private readonly IBaseRepository<ChatDbContext> _baseRepository;
+    private readonly IGroupRepository _groupRepository;
+
+    public GroupService(
+        IBaseRepository<ChatDbContext> baseRepository,
+        IGroupRepository groupRepository
+        )
     {
-        throw new NotImplementedException();
+        _baseRepository = baseRepository;
+        _groupRepository = groupRepository;
     }
 
-    public Task<Group> CreateAsync(Group item)
+    public async Task<User> AddUserAsync(GroupKey key, User user, GroupRolesTypes groupRolesType)
     {
-        throw new NotImplementedException();
+        if (groupRolesType == GroupRolesTypes.Founder)
+        {
+            throw new Exception();
+        }
+        return await _groupRepository.AddUserAsync(key, user, groupRolesType);
     }
 
-    public Task<bool> DeleteAsync(GroupKey key)
+    public async Task<Group> CreateAsync(Group item)
     {
-        throw new NotImplementedException();
+        Guards.IsNotNullOrEmptyGuid(item.Founder);
+
+        var hasFounder = item.Users?.Any(x => x.Identifier == item.Founder);
+        if (hasFounder != true)
+        {
+            item.Users = item.Users ?? new();
+
+            User? user = await _baseRepository.UnitOfWork.Context.Set<User>().FirstOrDefaultAsync(x => x.Key.Identifier == group.Founder);
+            if (Guards.IsNull(user))
+            {
+                throw new Exception("Founder not found");
+            }
+
+            item.Users.Add(user.Key);
+        }
+        return await _baseRepository.CreateAsync<Group, GroupKey>(item);
     }
 
-    public Task<Group?> GetAsync(GroupKey key)
+    public async Task<bool> DeleteAsync(GroupKey key)
     {
-        throw new NotImplementedException();
+        return await _baseRepository.DeleteAsync<Group, GroupKey>(key);
     }
 
-    public Task<User> GetFounderAsync(GroupKey key)
+    public async Task<Group?> GetAsync(GroupKey key)
     {
-        throw new NotImplementedException();
+        return await _baseRepository.GetAsync<Group, GroupKey>(key);
     }
 
-    public Task<string> GetNameAsync(GroupKey key)
+    public async Task<User> GetFounderAsync(GroupKey key)
     {
-        throw new NotImplementedException();
+        var group = await GetAsync(key);
+        if (Guards.IsNull(group))
+        {
+            throw new Exception("Group not found");
+        }
+        User? user = await _baseRepository.UnitOfWork.Context.Set<User>().FirstOrDefaultAsync(x => x.Key.Identifier == group.Founder);
+        if (Guards.IsNull(user))
+        {
+            throw new Exception("Founder not found");
+        }
+        return user;
     }
 
-    public Task<List<User>?> GetUsersAsync(GroupKey key)
+    public async Task<string> GetNameAsync(GroupKey key)
     {
-        throw new NotImplementedException();
+        var group = await GetAsync(key);
+        if (Guards.IsNull(group))
+        {
+            throw new Exception("Group not found");
+        }
+        return group.Key.Name;
     }
 
-    public Task<List<Group>> ListAsync(bool complete)
+    public async Task<List<User>?> GetUsersAsync(GroupKey key)
     {
-        throw new NotImplementedException();
+        var group = await GetAsync(key);
+        if (Guards.IsNull(group))
+        {
+            throw new Exception("Group not found");
+        }
+        return await _baseRepository.UnitOfWork.Context.Set<User>().ToListAsync();
     }
 
-    public Task<bool> RemoveUserAsync(GroupKey key, UserKey userKey)
+    public async Task<List<Group>> ListAsync(bool complete)
     {
-        throw new NotImplementedException();
+        return await _baseRepository.ListAsync<Group, GroupKey>(complete);
     }
 
-    public Task<bool> UpdateAsync(Group item)
+    public async Task<bool> RemoveUserAsync(GroupKey key, UserKey userKey)
     {
-        throw new NotImplementedException();
+        User? user = await _baseRepository.UnitOfWork.Context.Set<User>().FirstOrDefaultAsync(x => x.Key.Identifier == group.Founder);
+        if (Guards.IsNull(user) && user.Key.Identifier == userKey.Identifier)
+        {
+            throw new Exception("Founder can not be removed");
+        }
+        return await _groupRepository.RemoveUserAsync(key, userKey);
+    }
+
+    public async Task<bool> UpdateAsync(Group item)
+    {
+        return await _baseRepository.Update<Group, GroupKey>(item);
     }
 
     public Task<List<GroupRoles>> UpdateRoleAsync(List<GroupRoles> groupRoles)

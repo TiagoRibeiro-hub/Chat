@@ -25,9 +25,12 @@ public sealed class GroupRepository : IGroupRepository
 
             #region Add User To Group
 
-            Group? group = await GetAsync(key);
+            Group? group = await _baseRepository.GetAsync<Group, GroupKey>(key);
 
-            Guards.IsNotNullObject(group);
+            if (Guards.IsNull(group))
+            {
+                throw new Exception();
+            }
 
             if (!Guards.IsNotNullOrEmptyCollection(group.Users) || 
                 group.Users.Any(u => u.Identifier == user.Key.Identifier))
@@ -81,66 +84,6 @@ public sealed class GroupRepository : IGroupRepository
         }
     }
 
-    public async Task<Group> CreateAsync(Group item)
-    {
-        return await _baseRepository.CreateAsync<Group, GroupKey>(item);
-    }
-
-    public async Task<bool> DeleteAsync(GroupKey key)
-    {
-        return await _baseRepository.DeleteAsync<Group, GroupKey>(key);
-    }
-
-    public async Task<Group?> GetAsync(GroupKey key)
-    {
-        return await _baseRepository.GetAsync<Group, GroupKey>(key);
-    }
-
-    public async Task<User> GetFounderAsync(GroupKey key)
-    {
-        var group = await GetAsync(key);
-        if (Guards.IsNull(group))
-        {
-            throw new Exception("Group not found");
-        }
-        var user = await _baseRepository.UnitOfWork.Context.Set<User>().FirstOrDefaultAsync(x => x.Key.Identifier == group.Founder);
-        if (Guards.IsNull(user))
-        {
-            throw new Exception("User not found");
-        }
-        return user;
-    }
-
-    public async Task<string> GetNameAsync(GroupKey key)
-    {
-        var group = await GetAsync(key);
-        if (Guards.IsNull(group))
-        {
-            throw new Exception("Group not found");
-        }
-        return group.Key.Name;
-    }
-
-    public async Task<List<User>?> GetUsersAsync(GroupKey key)
-    {
-        var group = await GetAsync(key);
-        if (Guards.IsNull(group))
-        {
-            throw new Exception("Group not found");
-        }
-        var users = await _baseRepository.UnitOfWork.Context.Set<User>().ToListAsync();
-        if (!Guards.IsNotNullOrEmptyCollection(users))
-        {
-            throw new Exception("Users not found");
-        }
-        return users;
-    }
-
-    public async Task<List<Group>> ListAsync(bool complete)
-    {
-        return await _baseRepository.ListAsync<Group, GroupKey>(complete);
-    }
-
     public async Task<bool> RemoveUserAsync(GroupKey key, UserKey userKey)
     {
         try
@@ -149,7 +92,7 @@ public sealed class GroupRepository : IGroupRepository
 
             #region Remove User From Group
 
-            Group? group = await GetAsync(key);
+            Group? group = await _baseRepository.GetAsync<Group, GroupKey>(key);
 
             if (Guards.IsNull(group))
             {
@@ -183,7 +126,7 @@ public sealed class GroupRepository : IGroupRepository
 
             if (!Guards.IsNotNullOrEmptyCollection(user.Groups))
             {
-                throw new Exception("Group has no users");
+                throw new Exception("Group has no groups");
             }
 
             if (!Guards.IsNotNullOrEmptyCollection(user.Roles))
@@ -223,9 +166,5 @@ public sealed class GroupRepository : IGroupRepository
         }
     }
 
-    public async Task<bool> UpdateAsync(Group item)
-    {
-        return await _baseRepository.Update<Group, GroupKey>(item);
-    }
 }
 
