@@ -5,6 +5,7 @@ using ChatService.Infrastructure.Data;
 using ChatService.Infrastructure.Data.Abstractions;
 using ChatService.Core.Repositories.EntitiesRepositories.GroupsRepositories;
 using ChatService.Core.Helpers;
+using Microsoft.EntityFrameworkCore;
 
 namespace ChatService.Core.Services.GroupServices;
 
@@ -40,7 +41,7 @@ internal sealed class GroupService : IGroupService
         {
             item.Users = item.Users ?? new();
 
-            User? user = await _baseRepository.UnitOfWork.Context.Set<User>().FirstOrDefaultAsync(x => x.Key.Identifier == group.Founder);
+            User? user = await _baseRepository.UnitOfWork.Context.Set<User>().FirstOrDefaultAsync(x => x.Key.Identifier == item.Founder);
             if (Guards.IsNull(user))
             {
                 throw new Exception("Founder not found");
@@ -103,11 +104,17 @@ internal sealed class GroupService : IGroupService
 
     public async Task<bool> RemoveUserAsync(GroupKey key, UserKey userKey)
     {
-        User? user = await _baseRepository.UnitOfWork.Context.Set<User>().FirstOrDefaultAsync(x => x.Key.Identifier == group.Founder);
-        if (Guards.IsNull(user) && user.Key.Identifier == userKey.Identifier)
+        User? user = await _baseRepository.UnitOfWork.Context.Set<User>().FirstOrDefaultAsync(x => x.Key.Identifier == userKey.Identifier);
+        if (Guards.IsNull(user) || !Guards.IsNotNullOrEmptyCollection(user.Groups))
+        {
+            throw new Exception("User not found");
+        }
+        
+        if (user.Groups.Any(x => x.Founder == userKey.Identifier))
         {
             throw new Exception("Founder can not be removed");
         }
+
         return await _groupRepository.RemoveUserAsync(key, userKey);
     }
 
