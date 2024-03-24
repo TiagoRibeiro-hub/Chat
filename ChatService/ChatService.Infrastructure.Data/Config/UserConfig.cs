@@ -19,8 +19,8 @@ public sealed class UserConfig : IEntityTypeConfiguration<User>
         builder.OwnsMany(x => x.Groups, j =>
         {
             j.ToJson();
-        });        
-        
+        });
+
         builder.OwnsMany(x => x.Roles, j =>
         {
             j.ToJson();

@@ -31,21 +31,28 @@ public static class GroupEndpoint
             async Task<ResultDTO<UserDTO>>
             (Guid identifier, GroupRolesTypesDTO groupRolesType, UserDTO user, CoreServices coreServices) =>
         {
-            if(groupRolesType == GroupRolesTypesDTO.Founder)
+            try
             {
-                throw new Exception();
+                var res = await coreServices.GroupService.AddUserAsync(
+                    new GroupKeyDTO(identifier).ToDomainKey<GroupKeyDTO, GroupKey>(),
+                    user.ToDomain<UserDTO, User>(),
+                    (GroupRolesTypes)groupRolesType
+                    );
+
+                return new ResultDTO<UserDTO>()
+                {
+                    Data = res == null ? null : res.ToDto<UserDTO, User>()
+                };
             }
-
-            var res = await coreServices.GroupService.AddUserAsync(
-                new GroupKeyDTO(identifier).ToDomainKey<GroupKeyDTO, GroupKey>(),
-                user.ToDomain<UserDTO, User>(),
-                (GroupRolesTypes)groupRolesType
-                );
-
-            return new ResultDTO<UserDTO>()
+            catch (Exception ex)
             {
-                Data = res == null ? null : res.ToDto<UserDTO, User>()
-            };
+                return new ResultDTO<UserDTO>()
+                {
+                    Data = null,
+                    Message = ex.Message,
+                    StatusCode = HttpStatusCode.BadRequest,
+                };
+            }
         })
         .GroupConfig("AddUser")
         .AddEndpointFilter<AssociationUserToGroupEndpointFilter>();
@@ -57,25 +64,37 @@ public static class GroupEndpoint
             async Task<ResultDTO<GroupDTO>>
             (GroupDTO group, CoreServices coreServices) =>
         {
-            var res = await coreServices.GroupService.CreateAsync(group.ToDomain<GroupDTO, Group>());
-
-            var result = new ResultDTO<GroupDTO>()
+            try
             {
-                Data = res == null ? null : res.ToDto<GroupDTO, Group>(),
-            };
+                var res = await coreServices.GroupService.CreateAsync(group.ToDomain<GroupDTO, Group>());
 
-            if (ResultDTO<GroupDTO>.HasData(result.Data))
-            {
-                result.Message = $"/user/create/{result.Data.Key.Identifier}";
-                result.StatusCode = HttpStatusCode.Created;
+                var result = new ResultDTO<GroupDTO>()
+                {
+                    Data = res == null ? null : res.ToDto<GroupDTO, Group>(),
+                };
+
+                if (ResultDTO<GroupDTO>.HasData(result.Data))
+                {
+                    result.Message = $"/user/create/{result.Data.Key.Identifier}";
+                    result.StatusCode = HttpStatusCode.Created;
+                }
+                else
+                {
+                    result.Message = "Failed to create";
+                    result.StatusCode = HttpStatusCode.BadRequest;
+                }
+
+                return result;
             }
-            else
+            catch (Exception ex)
             {
-                result.Message = "Failed to create";
-                result.StatusCode = HttpStatusCode.BadRequest;
+                return new ResultDTO<GroupDTO>()
+                {
+                    Data = null,
+                    Message = ex.Message,
+                    StatusCode = HttpStatusCode.BadRequest,
+                };
             }
-
-            return result;
         })
         .GroupConfig("CreateGroup")
         .AddEndpointFilter<CreateEndpointFilter>();
@@ -87,11 +106,23 @@ public static class GroupEndpoint
             async Task<ResultDTO<bool>>
             (Guid identifier, CoreServices coreServices) =>
         {
-            var res = await coreServices.GroupService.DeleteAsync(new GroupKeyDTO(identifier).ToDomainKey<GroupKeyDTO, GroupKey>());
-            return new ResultDTO<bool>()
+            try
             {
-                Data = res
-            };
+                var res = await coreServices.GroupService.DeleteAsync(new GroupKeyDTO(identifier).ToDomainKey<GroupKeyDTO, GroupKey>());
+                return new ResultDTO<bool>()
+                {
+                    Data = res
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ResultDTO<bool>()
+                {
+                    Data = false,
+                    Message = ex.Message,
+                    StatusCode = HttpStatusCode.BadRequest,
+                };
+            }
         })
         .GroupConfig("DeleteGroup");
     }
@@ -102,11 +133,23 @@ public static class GroupEndpoint
             async Task<ResultDTO<GroupDTO>>
             (Guid identifier, CoreServices coreServices) =>
         {
-            var res = await coreServices.GroupService.GetAsync(new GroupKeyDTO(identifier).ToDomainKey<GroupKeyDTO, GroupKey>());
-            return new ResultDTO<GroupDTO>()
+            try
             {
-                Data = res == null ? null : res.ToDto<GroupDTO, Group>()
-            };
+                var res = await coreServices.GroupService.GetAsync(new GroupKeyDTO(identifier).ToDomainKey<GroupKeyDTO, GroupKey>());
+                return new ResultDTO<GroupDTO>()
+                {
+                    Data = res == null ? null : res.ToDto<GroupDTO, Group>()
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ResultDTO<GroupDTO>()
+                {
+                    Data = null,
+                    Message = ex.Message,
+                    StatusCode = HttpStatusCode.BadRequest,
+                };
+            }
         })
         .GroupConfig("GetGroup");
     }
@@ -117,11 +160,23 @@ public static class GroupEndpoint
             async Task<ResultDTO<UserDTO>>
             (Guid identifier, CoreServices coreServices) =>
         {
-            var res = await coreServices.GroupService.GetFounderAsync(new GroupKeyDTO(identifier).ToDomainKey<GroupKeyDTO, GroupKey>());
-            return new ResultDTO<UserDTO>()
+            try
             {
-                Data = res == null ? null : res.ToDto<UserDTO, User>()
-            };
+                var res = await coreServices.GroupService.GetFounderAsync(new GroupKeyDTO(identifier).ToDomainKey<GroupKeyDTO, GroupKey>());
+                return new ResultDTO<UserDTO>()
+                {
+                    Data = res == null ? null : res.ToDto<UserDTO, User>()
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ResultDTO<UserDTO>()
+                {
+                    Data = null,
+                    Message = ex.Message,
+                    StatusCode = HttpStatusCode.BadRequest,
+                };
+            }
         })
         .GroupConfig("GetGroupFounder");
     }
@@ -132,11 +187,23 @@ public static class GroupEndpoint
             async Task<ResultDTO<string>>
             (Guid identifier, CoreServices coreServices) =>
         {
-            var res = await coreServices.GroupService.GetNameAsync(new GroupKeyDTO(identifier).ToDomainKey<GroupKeyDTO, GroupKey>());
-            return new ResultDTO<string>()
+            try
             {
-                Data = res
-            };
+                var res = await coreServices.GroupService.GetNameAsync(new GroupKeyDTO(identifier).ToDomainKey<GroupKeyDTO, GroupKey>());
+                return new ResultDTO<string>()
+                {
+                    Data = res
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ResultDTO<string>()
+                {
+                    Data = string.Empty,
+                    Message = ex.Message,
+                    StatusCode = HttpStatusCode.BadRequest,
+                };
+            }
         })
         .GroupConfig("GetGroupName");
     }
@@ -147,11 +214,23 @@ public static class GroupEndpoint
             async Task<ResultDTO<List<UserDTO>>>
             (Guid identifier, CoreServices coreServices) =>
         {
-            var res = await coreServices.GroupService.GetUsersAsync(new GroupKeyDTO(identifier).ToDomainKey<GroupKeyDTO, GroupKey>());
-            return new ResultDTO<List<UserDTO>>()
+            try
             {
-                Data = res == null ? null : res.ToDto<UserDTO, User>()
-            };
+                var res = await coreServices.GroupService.GetUsersAsync(new GroupKeyDTO(identifier).ToDomainKey<GroupKeyDTO, GroupKey>());
+                return new ResultDTO<List<UserDTO>>()
+                {
+                    Data = res == null ? null : res.ToDto<UserDTO, User>()
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ResultDTO<List<UserDTO>>()
+                {
+                    Data = new List<UserDTO>(),
+                    Message = ex.Message,
+                    StatusCode = HttpStatusCode.BadRequest,
+                };
+            }
         })
         .GroupConfig("GetGroupUsers");
     }
@@ -162,11 +241,23 @@ public static class GroupEndpoint
             async Task<ResultDTO<List<GroupDTO>>>
             (bool complete, CoreServices coreServices) =>
         {
-            var res = await coreServices.GroupService.ListAsync(complete);
-            return new ResultDTO<List<GroupDTO>>()
+            try
             {
-                Data = res == null ? null : res.ToDto<GroupDTO, Group>()
-            };
+                var res = await coreServices.GroupService.ListAsync(complete);
+                return new ResultDTO<List<GroupDTO>>()
+                {
+                    Data = res == null ? null : res.ToDto<GroupDTO, Group>()
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ResultDTO<List<GroupDTO>>()
+                {
+                    Data = new List<GroupDTO>(),
+                    Message = ex.Message,
+                    StatusCode = HttpStatusCode.BadRequest,
+                };
+            }
         })
         .GroupConfig("ListGroups");
     }
@@ -177,15 +268,27 @@ public static class GroupEndpoint
             async Task<ResultDTO<bool>>
             (Guid identifier, Guid userIdentifier, CoreServices coreServices) =>
             {
-                var res = await coreServices.GroupService.RemoveUserAsync(
-                    new GroupKeyDTO(identifier).ToDomainKey<GroupKeyDTO, GroupKey>(),
-                    new UserKeyDTO(userIdentifier).ToDomainKey<UserKeyDTO, UserKey>()
-                    );
-
-                return new ResultDTO<bool>()
+                try
                 {
-                    Data = res
-                };
+                    var res = await coreServices.GroupService.RemoveUserAsync(
+                        new GroupKeyDTO(identifier).ToDomainKey<GroupKeyDTO, GroupKey>(),
+                        new UserKeyDTO(userIdentifier).ToDomainKey<UserKeyDTO, UserKey>()
+                        );
+
+                    return new ResultDTO<bool>()
+                    {
+                        Data = res
+                    };
+                }
+                catch (Exception)
+                {
+                    return new ResultDTO<bool>()
+                    {
+                        Data = false,
+                        Message = ex.Message,
+                        StatusCode = HttpStatusCode.BadRequest,
+                    };
+                }
             })
         .GroupConfig("RemoveUser")
         .AddEndpointFilter<DisassociationUserToGroupEndpointFilter>();

@@ -1,51 +1,66 @@
-﻿using ChatService.Core.Repositories.EntitiesRepositories.UsersRepositories;
+﻿using ChatService.Core.Helpers;
+using ChatService.Core.Repositories.EntitiesRepositories.UsersRepositories;
 using ChatService.Domain.Entities;
 using ChatService.Domain.Entities.Groups;
 using ChatService.Domain.Entities.Users;
+using ChatService.Infrastructure.Data;
+using ChatService.Infrastructure.Data.Abstractions;
 
 namespace ChatService.Core.Services.UserServices;
 
-internal sealed class UserService : IUserService
+internal sealed class UserService : ServiceBase, IUserService
 {
     private readonly IUserRepository _userRepository;
 
-    public UserService(IUserRepository userRepository)
+    public UserService(
+        IBaseRepository<ChatDbContext> baseRepository,
+        IUserRepository userRepository) : base(baseRepository)
     {
         _userRepository = userRepository;
     }
 
-    public Task<User> CreateAsync(User item)
+    public async Task<User> CreateAsync(User item)
     {
-        throw new NotImplementedException();
+        Guards.IsNotNullOrEmptyGuid(item.Key.Identifier, string.Format(ErrorMessages.KeyIsNull, nameof(item.Key.Identifier)));
+        return await _baseRepository.CreateAsync<User, UserKey>(item);
     }
 
-    public Task<bool> DeleteAsync(UserKey key)
+    public async Task<bool> DeleteAsync(UserKey key)
     {
-        throw new NotImplementedException();
+        Guards.IsNotNullOrEmptyGuid(key.Identifier, string.Format(ErrorMessages.KeyIsNull, nameof(key.Identifier)));
+        return await _baseRepository.DeleteAsync<User, UserKey>(key);
     }
 
-    public Task<User?> GetAsync(UserKey key)
+    public async Task<User?> GetAsync(UserKey key)
     {
-        throw new NotImplementedException();
+        Guards.IsNotNullOrEmptyGuid(key.Identifier, string.Format(ErrorMessages.KeyIsNull, nameof(key.Identifier)));
+        return await _baseRepository.GetAsync<User, UserKey>(key);
     }
 
-    public Task<List<Group>?> GetGroupsAsync(UserKey key)
+    public async Task<List<Group>?> GetGroupsAsync(UserKey key)
     {
-        throw new NotImplementedException();
+        Guards.IsNotNullOrEmptyGuid(key.Identifier, string.Format(ErrorMessages.KeyIsNull, nameof(key.Identifier)));
+        return await _userRepository.GetGroupsAsync(key);
     }
 
-    public Task<string> GetNameAsync(UserKey key)
+    public async Task<string> GetNameAsync(UserKey key)
     {
-        throw new NotImplementedException();
+        var user = await GetAsync(key);
+        if (Guards.IsNull(user))
+        {
+            throw new Exception(string.Format(ErrorMessages.NotFound, nameof(User)));
+        }
+        return user.Key.Name;
     }
 
-    public Task<List<User>> ListAsync(bool complete)
+    public async Task<List<User>> ListAsync(bool complete)
     {
-        throw new NotImplementedException();
+        return await _baseRepository.ListAsync<User, UserKey>(complete);
     }
 
-    public Task<bool> UpdateAsync(User item)
+    public async Task<bool> UpdateAsync(User item)
     {
-        throw new NotImplementedException();
+        Guards.IsNotNullOrEmptyGuid(item.Key.Identifier, string.Format(ErrorMessages.KeyIsNull, nameof(item.Key.Identifier)));
+        return await _baseRepository.Update<User, UserKey>(item);
     }
 }

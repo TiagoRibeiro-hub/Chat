@@ -49,6 +49,10 @@ public sealed class ResultDTO<T>
             {
                 return _statusCode ?? HttpStatusCode.BadRequest;
             }
+            if (!string.IsNullOrEmpty(_message) && _message.Contains("not found"))
+            {
+                return HttpStatusCode.NotFound;
+            }
 
             return _statusCode ?? HttpStatusCode.OK;
         }

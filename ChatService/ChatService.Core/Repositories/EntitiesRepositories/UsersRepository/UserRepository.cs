@@ -7,13 +7,11 @@ using ChatService.Infrastructure.Data.Abstractions;
 
 namespace ChatService.Core.Repositories.EntitiesRepositories.UsersRepositories;
 
-public sealed class UserRepository : IUserRepository
+public sealed class UserRepository : RepositoryBase, IUserRepository
 {
-    private readonly IBaseRepository<ChatDbContext> _baseRepository;
-
-    public UserRepository(IBaseRepository<ChatDbContext> baseRepository)
+    public UserRepository(
+        IBaseRepository<ChatDbContext> baseRepository) : base(baseRepository)
     {
-        _baseRepository = baseRepository;
     }
 
     public async Task<List<Group>?> GetGroupsAsync(UserKey key)
@@ -21,7 +19,7 @@ public sealed class UserRepository : IUserRepository
         var user = await _baseRepository.GetAsync<User, UserKey>(key);
         if (Guards.IsNull(user))
         {
-            throw new Exception("User not found");
+            throw new Exception(string.Format(ErrorMessages.NotFound, nameof(User)));
         }
         return user.Groups;
     }

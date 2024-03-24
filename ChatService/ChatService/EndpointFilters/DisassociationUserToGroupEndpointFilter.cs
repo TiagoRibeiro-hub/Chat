@@ -1,8 +1,10 @@
 ﻿
 using ChatService.Api;
 using ChatService.Api.DTOS;
+using ChatService.Api.DTOS.Groups;
 using ChatService.Api.DTOS.Messages;
 using ChatService.Api.DTOS.Users;
+using ChatService.Core;
 using ChatService.Core.Helpers;
 using ChatService.Domain.Entities;
 using ChatService.Domain.Entities.Messages;
@@ -38,11 +40,11 @@ public class DisassociationUserToGroupEndpointFilter : IEndpointFilter
 
         if (Guards.IsNull(userName))
         {
-            throw new Exception();
+            throw new Exception(string.Format(ErrorMessages.NotFound, nameof(UserDTO)));
         }
         userKey.Name = userName;
 
-        Guards.IsNotNullObject(userKey);
+        Guards.IsNotNullOrEmptyGuid(userIdentifier, string.Format(ErrorMessages.NotFound, nameof(UserDTO)));
 
         var result = await next(context);
 
@@ -55,7 +57,7 @@ public class DisassociationUserToGroupEndpointFilter : IEndpointFilter
 
             if (Guards.IsNull(groupMessages))
             {
-                throw new Exception();
+                throw new Exception(string.Format(ErrorMessages.NotFound, nameof(GroupDTO)));
             }
 
             var message = $"{userName} has left the group";

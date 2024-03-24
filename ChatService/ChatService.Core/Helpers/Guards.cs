@@ -17,7 +17,7 @@ public class Guards
         {
             throw new Exception(nameof(obj));
         }
-    }    
+    }
 
     public static bool IsNull<T>([NotNullWhen(false)] T? obj)
     {
@@ -29,11 +29,11 @@ public class Guards
         return obj != null && obj.Any() ? true : false;
     }
 
-    public static void IsNotNullOrEmptyGuid([NotNull] Guid? obj)
+    public static void IsNotNullOrEmptyGuid([NotNull] Guid? obj, string message)
     {
         if (obj == null || obj == Guid.Empty)
         {
-            throw new Exception();
+            throw new ArgumentNullException(message);
         }
     }
 }

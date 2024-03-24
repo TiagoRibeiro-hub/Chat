@@ -1,8 +1,10 @@
 ﻿
 using ChatService.Api;
 using ChatService.Api.DTOS;
+using ChatService.Api.DTOS.Groups;
 using ChatService.Api.DTOS.Messages;
 using ChatService.Api.DTOS.Users;
+using ChatService.Core;
 using ChatService.Core.Helpers;
 using ChatService.Domain.Entities.Messages;
 using ChatService.Infrastructure.Hubs.Notifications;
@@ -40,7 +42,7 @@ public class AssociationUserToGroupEndpointFilter : IEndpointFilter
 
             if (Guards.IsNull(groupMessages))
             {
-                throw new Exception();
+                throw new Exception(string.Format(ErrorMessages.NotFound, nameof(GroupDTO)));
             }
 
             var message = $"{userDto.Data.Key.Name} has join the group";

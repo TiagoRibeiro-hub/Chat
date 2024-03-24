@@ -15,7 +15,6 @@ public sealed class GroupMessagesConfig : IEntityTypeConfiguration<GroupMessages
             j.ToJson();
         });
 
-
         // Keys
         builder.HasIndex(x => x.GroupIdentifier);
 

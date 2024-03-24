@@ -3,6 +3,7 @@ using ChatService.Api.DTOS;
 using ChatService.Api.DTOS.Groups;
 using ChatService.Api.DTOS.Messages;
 using ChatService.Api.DTOS.Users;
+using ChatService.Core;
 using ChatService.Core.Helpers;
 using ChatService.Domain.Entities.Messages;
 using ChatService.Infrastructure.Hubs.Notifications;
@@ -45,17 +46,17 @@ public class CreateEndpointFilter : IEndpointFilter
         {
             if (!Guards.IsNotNullOrEmptyCollection(groupDto.Data.Users))
             {
-                throw new Exception();
+                throw new Exception(ErrorMessages.GroupHasNoUsers);
             }
 
             var date = DateTime.UtcNow;
 
             StringBuilder message = new();
             var founder = groupDto.Data.Users.FirstOrDefault(x => x.Identifier == groupDto.Data.Founder);
-            
+
             if (Guards.IsNull(founder))
             {
-                throw new Exception();
+                throw new Exception(string.Format(ErrorMessages.NotFound, nameof(groupDto.Data.Founder)));
             }
 
             message.Append(founder.Name).Append("has created the group");

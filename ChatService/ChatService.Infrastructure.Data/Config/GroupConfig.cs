@@ -20,7 +20,7 @@ public sealed class GroupConfig : IEntityTypeConfiguration<Group>
             .IsRequired();
 
         builder.Property(x => x.Founder).HasColumnType("uniqueidentifier").IsRequired();
-        
+
         builder.Property(x => x.IsPrivate).HasColumnType("bit").IsRequired();
 
         builder.OwnsMany(x => x.Users, j =>
