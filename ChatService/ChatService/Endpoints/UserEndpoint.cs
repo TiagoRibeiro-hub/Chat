@@ -161,7 +161,7 @@ public static class UserEndpoint
             {
                 return new ResultDTO<string>()
                 {
-                    Data = string.Empty,
+                    Data = null,
                     Message = ex.Message,
                     StatusCode = HttpStatusCode.BadRequest,
                 };
@@ -188,7 +188,7 @@ public static class UserEndpoint
             {
                 return new ResultDTO<List<UserDTO>>()
                 {
-                    Data = new List<UserDTO>(),
+                    Data = null,
                     Message = ex.Message,
                     StatusCode = HttpStatusCode.BadRequest,
                 };

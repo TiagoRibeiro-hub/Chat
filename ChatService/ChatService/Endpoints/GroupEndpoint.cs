@@ -199,7 +199,7 @@ public static class GroupEndpoint
             {
                 return new ResultDTO<string>()
                 {
-                    Data = string.Empty,
+                    Data = null,
                     Message = ex.Message,
                     StatusCode = HttpStatusCode.BadRequest,
                 };
@@ -226,7 +226,7 @@ public static class GroupEndpoint
             {
                 return new ResultDTO<List<UserDTO>>()
                 {
-                    Data = new List<UserDTO>(),
+                    Data = null,
                     Message = ex.Message,
                     StatusCode = HttpStatusCode.BadRequest,
                 };
@@ -253,7 +253,7 @@ public static class GroupEndpoint
             {
                 return new ResultDTO<List<GroupDTO>>()
                 {
-                    Data = new List<GroupDTO>(),
+                    Data = null,
                     Message = ex.Message,
                     StatusCode = HttpStatusCode.BadRequest,
                 };
@@ -280,7 +280,7 @@ public static class GroupEndpoint
                         Data = res
                     };
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
                     return new ResultDTO<bool>()
                     {

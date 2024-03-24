@@ -5,6 +5,7 @@ using ChatService.Api.DTOS.Users;
 using ChatService.Domain.Entities;
 using ChatService.Domain.Entities.Groups;
 using ChatService.Infrastructure.Utils;
+using System.Net;
 
 namespace ChatService.Endpoints;
 public static class RolesEndpoints
@@ -21,11 +22,23 @@ public static class RolesEndpoints
             async Task<ResultDTO<List<GroupRolesDTO>>>
             (Guid identifier, CoreServices coreServices) =>
             {
-                var res = await coreServices.RolesService.GetUserRolesAsync(new UserKeyDTO(identifier).ToDomainKey<UserKeyDTO, UserKey>());
-                return new ResultDTO<List<GroupRolesDTO>>()
+                try
                 {
-                    Data = res == null ? null : res.ToDto<GroupRolesDTO, GroupRoles>()
-                };
+                    var res = await coreServices.RolesService.GetUserRolesAsync(new UserKeyDTO(identifier).ToDomainKey<UserKeyDTO, UserKey>());
+                    return new ResultDTO<List<GroupRolesDTO>>()
+                    {
+                        Data = res == null ? null : res.ToDto<GroupRolesDTO, GroupRoles>()
+                    };
+                }
+                catch (Exception ex)
+                {
+                    return new ResultDTO<List<GroupRolesDTO>>()
+                    {
+                        Data = null,
+                        Message = ex.Message,
+                        StatusCode = HttpStatusCode.BadRequest,
+                    };
+                }
             })
         .RolesConfig("GetUserRoles");
     }
@@ -36,11 +49,23 @@ public static class RolesEndpoints
             async Task<ResultDTO<List<GroupRolesDTO>>>
             (Guid identifier, CoreServices coreServices) =>
             {
-                var res = await coreServices.RolesService.GetGroupRolesAsync(new GroupKeyDTO(identifier).ToDomainKey<GroupKeyDTO, GroupKey>());
-                return new ResultDTO<List<GroupRolesDTO>>()
+                try
                 {
-                    Data = res == null ? null : res.ToDto<GroupRolesDTO, GroupRoles>()
-                };
+                    var res = await coreServices.RolesService.GetGroupRolesAsync(new GroupKeyDTO(identifier).ToDomainKey<GroupKeyDTO, GroupKey>());
+                    return new ResultDTO<List<GroupRolesDTO>>()
+                    {
+                        Data = res == null ? null : res.ToDto<GroupRolesDTO, GroupRoles>()
+                    };
+                }
+                catch (Exception ex)
+                {
+                    return new ResultDTO<List<GroupRolesDTO>>()
+                    {
+                        Data = null,
+                        Message = ex.Message,
+                        StatusCode = HttpStatusCode.BadRequest,
+                    };
+                }
             })
         .RolesConfig("GetGroupRoles");
     }
@@ -51,14 +76,26 @@ public static class RolesEndpoints
             async Task<ResultDTO<List<GroupRolesDTO>>>
             (Guid identifier, List<GroupRolesDTO> groupRoles, CoreServices coreServices) =>
             {
-                var res = await coreServices.RolesService.UpdateGroupRoleAsync(
-                    new GroupKeyDTO(identifier).ToDomainKey<GroupKeyDTO, GroupKey>(),
-                    groupRoles.ToDomain<GroupRolesDTO, GroupRoles>()
-                    );
-                return new ResultDTO<List<GroupRolesDTO>>()
+                try
                 {
-                    Data = res == null ? null : res.ToDto<GroupRolesDTO, GroupRoles>()
-                };
+                    var res = await coreServices.RolesService.UpdateGroupRoleAsync(
+                        new GroupKeyDTO(identifier).ToDomainKey<GroupKeyDTO, GroupKey>(),
+                        groupRoles.ToDomain<GroupRolesDTO, GroupRoles>()
+                        );
+                    return new ResultDTO<List<GroupRolesDTO>>()
+                    {
+                        Data = res == null ? null : res.ToDto<GroupRolesDTO, GroupRoles>()
+                    };
+                }
+                catch (Exception ex)
+                {
+                    return new ResultDTO<List<GroupRolesDTO>>()
+                    {
+                        Data = null,
+                        Message = ex.Message,
+                        StatusCode = HttpStatusCode.BadRequest,
+                    };
+                }
             })
         .RolesConfig("UpdateGroupRole");
     }
