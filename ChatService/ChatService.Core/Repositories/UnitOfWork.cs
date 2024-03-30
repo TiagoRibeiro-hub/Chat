@@ -1,4 +1,4 @@
-﻿using ChatService.Infrastructure.Data.Abstractions;
+﻿using ChatService.Core.Abstractions;
 using Microsoft.EntityFrameworkCore.Storage;
 using System.Diagnostics.CodeAnalysis;
 using DbContext = Microsoft.EntityFrameworkCore.DbContext;

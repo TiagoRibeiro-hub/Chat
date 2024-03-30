@@ -1,5 +1,5 @@
-﻿using ChatService.Domain.Entities.Messages;
-using ChatService.Infrastructure.Data.Abstractions;
+﻿using ChatService.Core.Abstractions;
+using ChatService.Domain.Entities.Messages;
 
 namespace ChatService.Core.Services.MessageServices;
 

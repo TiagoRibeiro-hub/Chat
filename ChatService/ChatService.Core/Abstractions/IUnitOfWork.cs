@@ -1,6 +1,6 @@
 ﻿using DbContext = Microsoft.EntityFrameworkCore.DbContext;
 
-namespace ChatService.Infrastructure.Data.Abstractions;
+namespace ChatService.Core.Abstractions;
 
 public interface IUnitOfWork<out TContext> where TContext : DbContext, new()
 {

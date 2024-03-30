@@ -1,10 +1,10 @@
-﻿using ChatService.Core.Helpers;
+﻿using ChatService.Core.Abstractions;
+using ChatService.Core.Helpers;
 using ChatService.Core.Repositories.EntitiesRepositories.UsersRepositories;
 using ChatService.Domain.Entities;
 using ChatService.Domain.Entities.Groups;
 using ChatService.Domain.Entities.Users;
 using ChatService.Infrastructure.Data;
-using ChatService.Infrastructure.Data.Abstractions;
 
 namespace ChatService.Core.Services.UserServices;
 

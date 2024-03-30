@@ -31,8 +31,8 @@ public class DisassociationUserToGroupEndpointFilter : IEndpointFilter
 
     public async ValueTask<object?> InvokeAsync(EndpointFilterInvocationContext context, EndpointFilterDelegate next)
     {
-        Guid groupIdentifier = ContextUtils.GetRouteValueGuid(context.HttpContext, "identifier");
-        Guid userIdentifier = ContextUtils.GetRouteValueGuid(context.HttpContext, "userIdentifier");
+        Guid groupIdentifier = HttpContextUtils.GetRouteValueGuid(context.HttpContext, "identifier");
+        Guid userIdentifier = HttpContextUtils.GetRouteValueGuid(context.HttpContext, "userIdentifier");
 
         UserKeyDTO userKey = new(userIdentifier);
 

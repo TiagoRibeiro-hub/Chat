@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using ItemKey = ChatService.Domain.Entities.Key;
 
-namespace ChatService.Infrastructure.Data.Abstractions;
+namespace ChatService.Core.Abstractions;
 public interface IBaseRepository<TContext> where TContext : DbContext, new()
 {
     IUnitOfWork<TContext> UnitOfWork { get; }

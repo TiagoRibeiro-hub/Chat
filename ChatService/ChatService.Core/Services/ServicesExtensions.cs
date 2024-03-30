@@ -1,4 +1,5 @@
 ﻿
+using ChatService.Core.Abstractions;
 using ChatService.Core.Repositories;
 using ChatService.Core.Repositories.EntitiesRepositories.GroupsRepositories;
 using ChatService.Core.Repositories.EntitiesRepositories.MessagesRepository;
@@ -9,7 +10,6 @@ using ChatService.Core.Services.MessageServices;
 using ChatService.Core.Services.RolesServices;
 using ChatService.Core.Services.UserServices;
 using ChatService.Infrastructure.Data;
-using ChatService.Infrastructure.Data.Abstractions;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace ChatService.Core.Services;

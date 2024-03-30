@@ -1,6 +1,6 @@
-﻿using ChatService.Domain.Entities.Messages;
+﻿using ChatService.Core.Abstractions;
+using ChatService.Domain.Entities.Messages;
 using ChatService.Infrastructure.Data;
-using ChatService.Infrastructure.Data.Abstractions;
 using Microsoft.EntityFrameworkCore;
 
 namespace ChatService.Core.Repositories.EntitiesRepositories.MessagesRepository;

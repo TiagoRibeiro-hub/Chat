@@ -1,6 +1,6 @@
-﻿using ChatService.Core.Helpers;
+﻿using ChatService.Core.Abstractions;
+using ChatService.Core.Helpers;
 using ChatService.Domain.Entities;
-using ChatService.Infrastructure.Data.Abstractions;
 using Microsoft.EntityFrameworkCore;
 using ItemKey = ChatService.Domain.Entities.Key;
 

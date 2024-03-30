@@ -1,6 +1,6 @@
 ﻿using ChatService.Domain.Entities;
 
-namespace ChatService.Infrastructure.Data.Abstractions;
+namespace ChatService.Core.Abstractions;
 public interface IBaseService<T, K> where T : Base<K> where K : Key
 {
     Task<T> CreateAsync(T item);

@@ -31,7 +31,7 @@ public class AssociationUserToGroupEndpointFilter : IEndpointFilter
     {
         var result = await next(context);
 
-        Guid groupIdentifier = ContextUtils.GetRouteValueGuid(context.HttpContext, "identifier");
+        Guid groupIdentifier = HttpContextUtils.GetRouteValueGuid(context.HttpContext, "identifier");
 
         if (result is ResultDTO<UserDTO> userDto &&
             userDto.StatusCode == System.Net.HttpStatusCode.OK &&

@@ -1,7 +1,7 @@
-﻿using ChatService.Domain.Entities;
+﻿using ChatService.Core.Abstractions;
+using ChatService.Domain.Entities;
 using ChatService.Domain.Entities.Groups;
 using ChatService.Infrastructure.Data;
-using ChatService.Infrastructure.Data.Abstractions;
 
 namespace ChatService.Core.Repositories.EntitiesRepositories.RolesRepositories;
 

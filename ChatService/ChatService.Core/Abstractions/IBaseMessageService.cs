@@ -1,6 +1,6 @@
 ﻿using ChatService.Domain.Entities;
 
-namespace ChatService.Infrastructure.Data.Abstractions;
+namespace ChatService.Core.Abstractions;
 
 public interface IBaseMessageService<T> where T : BaseMessage
 {

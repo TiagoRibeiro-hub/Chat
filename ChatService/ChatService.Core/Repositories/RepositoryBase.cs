@@ -1,5 +1,5 @@
-﻿using ChatService.Infrastructure.Data;
-using ChatService.Infrastructure.Data.Abstractions;
+﻿using ChatService.Core.Abstractions;
+using ChatService.Infrastructure.Data;
 
 namespace ChatService.Core.Repositories;
 public class RepositoryBase

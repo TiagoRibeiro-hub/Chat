@@ -1,7 +1,7 @@
 ﻿using ChatService.Core.Helpers;
 
 namespace ChatService.Utils;
-public class ContextUtils
+public class HttpContextUtils
 {
     internal static object GetRouteValueObject(HttpContext httpContext, string name)
     {
@@ -14,8 +14,8 @@ public class ContextUtils
     {
         object obj = GetRouteValueObject(httpContext, name);
 
+        Guards.IsNotNullObject(obj);
         string value = obj.ToString();
-        Guards.IsNotNullObject(value);
 
         if (!Guid.TryParse(value, out Guid valueGuid))
         {
