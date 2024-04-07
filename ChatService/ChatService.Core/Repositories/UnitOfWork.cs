@@ -41,7 +41,7 @@ public class UnitOfWork<TContext> : IUnitOfWork<TContext>
         _objTran.Dispose();
     }
 
-    public void Save()
+    public void SaveChanges()
     {
         try
         {

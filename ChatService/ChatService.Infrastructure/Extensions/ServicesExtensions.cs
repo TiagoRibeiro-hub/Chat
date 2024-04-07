@@ -13,7 +13,10 @@ public static class ServicesExtensions
     /// <param name="services"><see cref="IServiceCollection"/></param>
     public static void AddChatServices(this IServiceCollection services)
     {
-        services.AddSignalR();
+        services.AddSignalR(options =>
+        {
+            options.DisableImplicitFromServicesParameters = true;
+        });
 
         services.AddSingleton<IDictionary<string, UserDTO>>(opt => new Dictionary<string, UserDTO>());
         services.AddSingleton<IDictionary<string, GroupUserDTO>>(opt => new Dictionary<string, GroupUserDTO>());

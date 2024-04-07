@@ -9,5 +9,5 @@ public interface IUnitOfWork<out TContext> where TContext : DbContext, new()
     void Dispose();
     void Commit();
     void Rollback();
-    void Save();
+    void SaveChanges();
 }

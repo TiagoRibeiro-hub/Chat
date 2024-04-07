@@ -15,5 +15,6 @@ public sealed class ErrorMessages
     public const string UserHasNoRoles = "User has no roles";
     public const string UserNotFoundOnGroup = "User {0} Not Found On Group {1}";
 
+    public const string SomethingWentWrong = "Something went wrong";
 }
 

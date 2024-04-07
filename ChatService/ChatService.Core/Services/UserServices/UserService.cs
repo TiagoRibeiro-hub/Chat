@@ -8,7 +8,7 @@ using ChatService.Infrastructure.Data;
 
 namespace ChatService.Core.Services.UserServices;
 
-internal sealed class UserService : ServiceBase, IUserService
+internal sealed class UserService : RepositoryBaseService, IUserService
 {
     private readonly IUserRepository _userRepository;
 

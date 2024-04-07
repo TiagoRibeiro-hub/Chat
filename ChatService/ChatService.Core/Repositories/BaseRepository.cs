@@ -30,7 +30,7 @@ public sealed class BaseRepository<TContext> : IBaseRepository<TContext>
                 throw new Exception();
             }
 
-            UnitOfWork.Save();
+            UnitOfWork.SaveChanges();
             return entityTracker.Entity;
         }
         catch (Exception)
@@ -55,7 +55,7 @@ public sealed class BaseRepository<TContext> : IBaseRepository<TContext>
                 throw new Exception();
             }
 
-            UnitOfWork.Save();
+            UnitOfWork.SaveChanges();
             return true;
         }
         catch (Exception)
@@ -96,7 +96,7 @@ public sealed class BaseRepository<TContext> : IBaseRepository<TContext>
                 throw new Exception();
             }
 
-            UnitOfWork.Save();
+            UnitOfWork.SaveChanges();
             return Task.FromResult(true);
         }
         catch (Exception)

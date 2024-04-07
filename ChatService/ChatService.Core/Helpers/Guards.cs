@@ -11,12 +11,13 @@ public class Guards
             throw new Exception();
         }
     }
-    public static void IsNotNullObject<T>([NotNull] T? obj)
+    public static T IsNotNullObject<T>([NotNull] T? obj)
     {
         if (obj == null)
         {
             throw new Exception(nameof(obj));
         }
+        return obj;
     }
 
     public static bool IsNull<T>([NotNullWhen(false)] T? obj)

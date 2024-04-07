@@ -1,7 +1,12 @@
 ﻿using ChatService.Api.DTOS.Groups;
 using ChatService.Api.DTOS.Messages;
+using ChatService.Core;
+using ChatService.Core.Helpers;
+using ChatService.Core.Services.GroupServices;
+using ChatService.Domain.Entities;
 using ChatService.Infrastructure.Hubs.Chat.Services;
 using ChatService.Infrastructure.Utils;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 
 namespace ChatService.Infrastructure.Hubs.Chat;
@@ -19,13 +24,22 @@ public sealed class ChatGroupHub : Hub<IChatGroupHub>
                         .ConnectedUsers(_groupConnections!.Values.Where(x => x.Group.Key.Identifier == key.Identifier));
     }
 
-    public Task SendPreviousMessages(GroupDTO groupDTO)
+    public async Task SendPreviousMessages(GroupDTO groupDTO, [FromServices] IGroupService groupService)
     {
-        // TODO Db confirm groupName
+        if (Guards.IsNull(groupDTO.Key))
+        {
+            throw new Exception(string.Format(ErrorMessages.NotFound, nameof(GroupKeyDTO)));
+        }
+
         groupDTO.Key.ValidateIdentifier();
 
-        return Clients.Group(groupDTO.Key.Identifier.ToString())
-                        .PreviousMessageAsync(groupDTO, _groupMessages?.GetMessagesDTO(groupDTO.Key.Identifier, null));
+        if (string.IsNullOrEmpty(groupDTO.Key.Name))
+        {
+            groupDTO.Key.Name = await groupService.GetNameAsync(groupDTO.Key.ToDomainKey<GroupKeyDTO, GroupKey>());
+        }
+
+        _ = Clients.Group(groupDTO.Key.Identifier.ToString())
+                   .PreviousMessageAsync(groupDTO, _groupMessages?.GetMessagesDTO(groupDTO.Key.Identifier, null));
     }
 
     public async Task SendMessageAsync(string message)

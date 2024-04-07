@@ -1,7 +1,12 @@
 ﻿using ChatService.Api.DTOS.Messages;
 using ChatService.Api.DTOS.Users;
+using ChatService.Core;
+using ChatService.Core.Helpers;
+using ChatService.Core.Services.UserServices;
+using ChatService.Domain.Entities;
 using ChatService.Infrastructure.Hubs.Chat.Services;
 using ChatService.Infrastructure.Utils;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 
 namespace ChatService.Infrastructure.Hubs.Chat;
@@ -12,13 +17,18 @@ public sealed class ChatUserHub : Hub<IChatUserHub>
 
     private readonly IDictionary<Guid, List<UserMessageDTO>>? _connectionsMessages;
 
-    public async Task StartChatAsync(UserDTO user)
+    public async Task StartChatAsync(UserDTO user, [FromServices] IUserService userService)
     {
+        if (Guards.IsNull(user.Key))
+        {
+            throw new Exception(string.Format(ErrorMessages.NotFound, nameof(UserKeyDTO)));
+        }
+
         user.Key.ValidateIdentifier();
 
         if (string.IsNullOrEmpty(user.Key.Name))
         {
-            // TODO get name from bd
+            user.Key.Name = await userService.GetNameAsync(user.Key.ToDomainKey<UserKeyDTO, UserKey>());
         }
         _connections![Context.ConnectionId] = user;
 

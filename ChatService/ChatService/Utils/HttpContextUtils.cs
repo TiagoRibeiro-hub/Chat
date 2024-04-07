@@ -13,8 +13,8 @@ public class HttpContextUtils
     internal static Guid GetRouteValueGuid(HttpContext httpContext, string name)
     {
         object obj = GetRouteValueObject(httpContext, name);
+        obj = Guards.IsNotNullObject(obj);
 
-        Guards.IsNotNullObject(obj);
         string value = obj.ToString();
 
         if (!Guid.TryParse(value, out Guid valueGuid))
@@ -28,9 +28,9 @@ public class HttpContextUtils
     internal static string GetRouteValueGuidAsString(HttpContext httpContext, string name)
     {
         object obj = GetRouteValueObject(httpContext, name);
+        obj = Guards.IsNotNullObject(obj);
 
         string value = obj.ToString();
-        Guards.IsNotNullObject(value);
 
         if (!Guid.TryParse(value, out Guid _))
         {

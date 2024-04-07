@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ChatService.Core.Services.GroupServices;
 
-internal sealed class GroupService : ServiceBase, IGroupService
+internal sealed class GroupService : RepositoryBaseService, IGroupService
 {
     private readonly IGroupRepository _groupRepository;
 
@@ -75,7 +75,7 @@ internal sealed class GroupService : ServiceBase, IGroupService
                 user.Roles = new();
             }
 
-            user.Roles.Add(new GroupRoles(groupRolesType, key));
+            user.Roles.Add(new GroupRoles(groupRolesType, key, user.Key));
 
             var userTracker = _baseRepository.UnitOfWork.Context.Set<User>().Update(user);
             if (userTracker.State != EntityState.Modified)
@@ -83,7 +83,7 @@ internal sealed class GroupService : ServiceBase, IGroupService
                 throw new Exception();
             }
 
-            _baseRepository.UnitOfWork.Save();
+            _baseRepository.UnitOfWork.SaveChanges();
             #endregion
 
             return user;
@@ -251,7 +251,7 @@ internal sealed class GroupService : ServiceBase, IGroupService
             {
                 throw new Exception();
             }
-            _baseRepository.UnitOfWork.Save();
+            _baseRepository.UnitOfWork.SaveChanges();
 
             #endregion
 
@@ -268,10 +268,5 @@ internal sealed class GroupService : ServiceBase, IGroupService
     {
         Guards.IsNotNullOrEmptyGuid(item.Key.Identifier, string.Format(ErrorMessages.KeyIsNull, nameof(item.Key.Identifier)));
         return await _baseRepository.Update<Group, GroupKey>(item);
-    }
-
-    public Task<List<GroupRoles>> UpdateRoleAsync(List<GroupRoles> groupRoles)
-    {
-        throw new NotImplementedException();
     }
 }
